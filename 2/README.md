@@ -1,0 +1,1 @@
+Counts occurencies of characters in a given string.
