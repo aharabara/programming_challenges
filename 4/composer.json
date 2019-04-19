@@ -1,0 +1,10 @@
+{
+    "require": {
+        "ext-ncurses": "*"
+    },
+    "autoload": {
+        "classmap": [
+            "src"
+        ]
+    }
+}
