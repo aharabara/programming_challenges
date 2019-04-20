@@ -1,8 +1,8 @@
 <?php
 
-namespace App;
+namespace Base;
 
-class Point
+class Point implements DrawableInterface
 {
 
     /** @var string */
@@ -38,14 +38,5 @@ class Point
     {
         ncurses_move($this->y, $this->x);
         ncurses_addstr($this->symbol);
-    }
-
-    /**
-     * @param Point $point
-     * @return bool
-     */
-    public function collide(Point $point): bool
-    {
-        return $point->x === $this->x && $point->y === $this->y;
     }
 }

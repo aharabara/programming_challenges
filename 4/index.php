@@ -1,58 +1,50 @@
 <?php
-require './vendor/autoload.php';
 
 use App\Apple;
-use App\Point;
+use App\Scene;
 use App\Snake;
+use Base\Application;
+use Base\Colors;
+use Base\Position;
+use Base\Square;
+use Base\Terminal;
+use Base\Text;
+use Base\Window;
 
-const CURSOR_INVISIBLE = 0;
-const CURSOR_NORMAL = 1;
-const CURSOR_VISIBLE = 2;
+require './vendor/autoload.php';
 
-ncurses_init();
-//ncurses_echo();
-ncurses_noecho();
-ncurses_nl();
-//ncurses_nonl();
-ncurses_curs_set(CURSOR_INVISIBLE);
-
-/** @var Point[] $layers */
-$layers = [];
 $snake = new Snake('#', 10, 10);
 $snake->grow()->grow();
 
-$apple = new Apple('O', 20, 20);
-$layers[] = $apple;
-$layers[] = $snake;
 
+$scene = (new Scene('background'))
+    ->setDimensions(new Position(0, 0), new Position(Terminal::width(), Terminal::height()));
 
-function getch_nonblock($timeout)
-{
-    $read = array(STDIN);
-    $null = null;    // stream_select() uses references, thus variables are necessary for the first 3 parameters
-    if (stream_select($read, $null, $null, floor($timeout / 1000000), $timeout % 1000000) != 1) {
-        return null;
+$apple = new Apple('O', $scene->getSurface()->resize(-1, -1));
+//print_r(Terminal::centered(10, 10));
+//die();
+$dieWindow = (new Window('die_win', new Text(str_repeat('You died.', 10), Text::CENTER_MIDDLE)))
+    ->setVisible(false)
+    ->setSurface(Terminal::centered(50, 5))
+    ->setDefaultColorPair(Colors::BLACK_YELLOW)
+    ->build();
+
+$app = (new Application(NCURSES_KEY_RIGHT))
+    ->setRepeatingKeys(true)
+    ->addLayer($scene)
+    ->addLayer($dieWindow)
+    ->addLayer($apple)
+    ->addLayer($snake);
+
+$app->handle(static function (Application $app, ?int $key) use ($scene, $dieWindow, $apple, $snake) {
+    if ($snake->collide($apple)) {
+        $snake->grow();
+        $apple->randMove();
     }
-    return ncurses_getch();
-}
-
-$key = NCURSES_KEY_RIGHT;
-while (true) {
-    ncurses_erase();
-    $key = getch_nonblock(100000) ?: $key; // use a non blocking getch() instead of $ncurses->getCh()
-    foreach ($layers as $item) {
-        if ($snake->collide($apple)) {
-            $snake->grow();
-            $apple->randMove();
-        } elseif ($snake->selfCollision()) {
-            $snake->die();
-            break;
-        }
-        $item->draw($key);
+    if ($snake->selfCollision() || !$snake->within($scene)) {
+        $dieWindow->setVisible(true);
+        $snake->die();
+        $app->exit();
+        return 0;
     }
-    ncurses_refresh(0);
-    usleep(100000);
-}
-
-ncurses_echo();
-ncurses_curs_set(CURSOR_VISIBLE);
+});
