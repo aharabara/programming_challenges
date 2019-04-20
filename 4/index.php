@@ -20,9 +20,8 @@ $snake->grow()->grow();
 $scene = (new Scene('background'))
     ->setDimensions(new Position(0, 0), new Position(Terminal::width(), Terminal::height()));
 
-$apple = new Apple('O', $scene->getSurface()->resize(-1, -1));
-//print_r(Terminal::centered(10, 10));
-//die();
+$apple = new Apple('O', $scene->getSurface()->resize(-2, -2));
+
 $dieWindow = (new Window('die_win', new Text('You died.', Text::CENTER_MIDDLE)))
     ->setVisible(false)
     ->setSurface(Terminal::centered(50, 5))
