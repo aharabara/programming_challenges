@@ -23,7 +23,7 @@ $scene = (new Scene('background'))
 $apple = new Apple('O', $scene->getSurface()->resize(-1, -1));
 //print_r(Terminal::centered(10, 10));
 //die();
-$dieWindow = (new Window('die_win', new Text(str_repeat('You died.', 10), Text::CENTER_MIDDLE)))
+$dieWindow = (new Window('die_win', new Text('You died.', Text::CENTER_MIDDLE)))
     ->setVisible(false)
     ->setSurface(Terminal::centered(50, 5))
     ->setDefaultColorPair(Colors::BLACK_YELLOW)

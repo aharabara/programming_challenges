@@ -11,7 +11,7 @@ class Text implements DrawableInterface
     /** @var Surface */
     protected $surface;
 
-    public const DEFAULT_FILL = 1;
+    public const DEFAULT_FILL = 0;
     public const CENTER_TOP = 1;
     public const CENTER_MIDDLE = 2;
     public const CENTER_BOTTOM = 3;
@@ -33,12 +33,13 @@ class Text implements DrawableInterface
      * @param int $align
      * @throws \Exception
      */
-    public function __construct(string $text, int $align = self::DEFAULT_FILL)
+    public function __construct(string $text, int $align)
     {
         $this->text = $text;
         if (!in_array($align, self::ALIGN_TYPES, true)) {
             throw new \Exception('Align type is not supported');
         }
+        $this->align = $align;
     }
 
     /**
@@ -85,7 +86,6 @@ class Text implements DrawableInterface
         $renderedLines = array_slice($lines, 0, $this->surface->height());
 
         ncurses_move($y, $x);
-//        print_r($renderedLines[0]);die;
         foreach ($renderedLines as $line) {
             ncurses_move($y++, $x);
             ncurses_addstr($line);
@@ -102,6 +102,23 @@ class Text implements DrawableInterface
 
     protected function centerMiddleRender()
     {
+        $pos = $this->surface->topLeft();
+
+        $lines = str_split($this->text, $this->surface->width());
+        $renderedLines = array_slice($lines, 0, $this->surface->height());
+
+        $y = $pos->getY() + round( $this->surface->height() - count($renderedLines) / 2) / 2;
+
+
+        foreach ($renderedLines as $line) {
+            $x = $pos->getX() + $this->surface->width() / 2 - strlen($line) /2;
+            ncurses_move($y++, $x);
+            ncurses_addstr($line);
+        }
+        if (count($renderedLines) !== count($lines)) {
+            ncurses_move($y++, $x);
+            ncurses_addstr('>more...');
+        }
     }
 
     protected function centerBottomRender()
