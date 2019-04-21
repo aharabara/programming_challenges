@@ -2,27 +2,28 @@
 
 namespace Base;
 
-class Window extends Square
+class Window extends Square implements FocusableInterface
 {
-
-    /** @var bool */
-    protected $wasBuild = false;
 
     /** @var string */
     protected $id;
 
-    /** @var Text */
-    protected $text;
+    /** @var DrawableInterface */
+    protected $content;
 
     /**
      * Window constructor.
      * @param string $id
-     * @param Text $text
+     * @param Surface $surface
+     * @param DrawableInterface $content
+     * @throws \Exception
      */
-    public function __construct(string $id, Text $text)
+    public function __construct(string $id, Surface $surface, DrawableInterface $content)
     {
         $this->id = $id;
-        $this->text = $text;
+        $this->content = $content;
+        $this->surface = $surface;
+        $this->content->setSurface($surface->resize(-1, -1));
     }
 
     /**
@@ -31,29 +32,23 @@ class Window extends Square
      */
     public function draw(?int $key)
     {
-        if (!$this->wasBuild) {
-            throw new \Exception('Window wasn\'t build.');
-        }
         if (!$this->visible) {
             return;
         }
         parent::draw($key);
-        $this->text->draw($key);
+        $this->content->draw($key);
     }
 
-    /**
-     * @return $this
-     * @throws \Exception
-     */
-    public function build(): self
+    public function setSurface(Surface $surface): Square
     {
-        if (!$this->surface) {
-            throw new \Exception('Window surface wasn\'t set');
-        }
-        if (!$this->wasBuild) {
-            $this->wasBuild = true;
-        }
-        $this->text->setSurface($this->surface->resize(-1, -1));
-        return $this;
+        $this->content->setSurface($surface->resize(-1, -1));
+        return parent::setSurface($surface);
     }
+
+//    public function setMenu(Menu $menu)
+//    {
+//
+//    }
+
+
 }

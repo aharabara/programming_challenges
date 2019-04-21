@@ -39,4 +39,9 @@ class Point implements DrawableInterface
         ncurses_move($this->y, $this->x);
         ncurses_addstr($this->symbol);
     }
+
+    function setSurface(Surface $surface)
+    {
+        throw new \BadMethodCallException('Point can\'t be a surface');
+    }
 }

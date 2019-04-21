@@ -13,25 +13,24 @@ class Application
     /** @var int|null $lastValidKey */
     protected $lastValidKey;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $maxWidth;
 
+    /** @var int */
+    protected $maxHeight;
+
+    /** @var array */
+    protected $layers = [];
+
+    /** @var bool */
+    protected $repeatingKeys = false;
+
+    /** @var bool */
+    protected $singleLayerFocus;
     /**
      * @var int
      */
-    protected $maxHeight;
-
-    /**
-     * @var array
-     */
-    protected $layers = [];
-
-    /**
-     * @var bool
-     */
-    protected $repeatingKeys = false;
+    protected $currentWindowIndex;
 
     public function __construct(?int $startingKey = null)
     {
@@ -64,6 +63,7 @@ class Application
         }
         if ($this->repeatingKeys) {
             $key = $key ?? $this->getLastValidKey();
+            $this->lastValidKey = $key ?? $this->lastValidKey;
         }
         return $key;
     }
@@ -93,9 +93,9 @@ class Application
      */
     public function handle(\Closure $callback): void
     {
+        $this->currentWindowIndex = 0;
         while (true) {
             $key = $this->getNonBlockCh(100000); // use a non blocking getch() instead of $ncurses->getCh()
-            $this->lastValidKey = $key ?? $this->lastValidKey;
             $callback($this, $key);
             foreach ($this->layers as $layer) {
                 ncurses_color_set(Colors::BLACK_WHITE);
@@ -145,6 +145,7 @@ class Application
     protected function initColorPairs(): void
     {
         ncurses_init_pair(Colors::BLACK_WHITE, NCURSES_COLOR_WHITE, NCURSES_COLOR_BLACK);
+        ncurses_init_pair(Colors::WHITE_BLACK, NCURSES_COLOR_BLACK, NCURSES_COLOR_WHITE);
         ncurses_init_pair(Colors::BLACK_YELLOW, NCURSES_COLOR_YELLOW, NCURSES_COLOR_BLACK);
     }
 
@@ -155,6 +156,16 @@ class Application
     public function setRepeatingKeys(bool $repeatingKeys): self
     {
         $this->repeatingKeys = $repeatingKeys;
+        return $this;
+    }
+
+    /**
+     * @param bool $singleLayerFocus
+     * @return Application
+     */
+    public function setSingleLayerFocus(bool $singleLayerFocus): self
+    {
+        $this->singleLayerFocus = $singleLayerFocus;
         return $this;
     }
 }

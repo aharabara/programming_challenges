@@ -22,11 +22,9 @@ $scene = (new Scene('background'))
 
 $apple = new Apple('O', $scene->getSurface()->resize(-2, -2));
 
-$dieWindow = (new Window('die_win', new Text('You died.', Text::CENTER_MIDDLE)))
+$dieWindow = (new Window('die_win', Terminal::centered(50, 5), new Text('You died.', Text::CENTER_MIDDLE)))
     ->setVisible(false)
-    ->setSurface(Terminal::centered(50, 5))
-    ->setDefaultColorPair(Colors::BLACK_YELLOW)
-    ->build();
+    ->setDefaultColorPair(Colors::BLACK_YELLOW);
 
 $app = (new Application(NCURSES_KEY_RIGHT))
     ->setRepeatingKeys(true)
