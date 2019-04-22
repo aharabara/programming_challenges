@@ -1,10 +1,11 @@
 # programming_challenges
-# TUI Framework
+## TUI Framework
  - Components
    - [x] Window
      - [ ] Scrolling
    - [x] List
      - [ ] Scrolling
+     - [ ] Reordering
    - [ ] Table
      - [ ] Columns
      - [ ] Editable
