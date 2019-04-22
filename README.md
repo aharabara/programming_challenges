@@ -31,3 +31,4 @@
    - [ ] Keymapping
    - [ ] Theming
    - [ ] Multithreading (optional)
+   - [ ] Copy&Paste
