@@ -1,8 +1,9 @@
 <?php
-namespace App;
+namespace Snake;
 
-use App\Interfaces\CollidableInterface;
-use \Base\Point;
+use Snake\Interfaces\CollidableInterface;
+use Base\Point;
+use Base\Position;
 use Base\Surface;
 
 class Apple extends Point implements CollidableInterface
@@ -10,15 +11,14 @@ class Apple extends Point implements CollidableInterface
 
     /**
      * Apple constructor.
-     * @param string $symbol
      * @param Surface $surface
      * @throws \Exception
      */
-    public function __construct(string $symbol, Surface $surface)
+    public function __construct(Surface $surface)
     {
         $x = random_int($surface->topLeft()->getX(), $surface->bottomRight()->getX());
         $y = random_int($surface->topLeft()->getY(), $surface->bottomRight()->getY());
-        parent::__construct($symbol, $x, $y);
+        parent::__construct('O', new Position($x, $y));
     }
 
 
@@ -28,8 +28,8 @@ class Apple extends Point implements CollidableInterface
      */
     public function randMove(): self
     {
-        $this->x = random_int(0, 40);
-        $this->y = random_int(0, 20);
+        $this->position->setY(random_int(0, $this->surface()->height()));
+        $this->position->setX(random_int(0, $this->surface()->width()));
         return $this;
     }
 
@@ -39,6 +39,6 @@ class Apple extends Point implements CollidableInterface
      */
     public function collide(CollidableInterface $point): bool
     {
-        return $point->x === $this->x && $point->y === $this->y;
+        return $point->position->getX() === $this->position->getX() && $point->position->getY() === $this->position->getY();
     }
 }

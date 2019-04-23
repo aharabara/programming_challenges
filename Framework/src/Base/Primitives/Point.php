@@ -8,27 +8,24 @@ class Point implements DrawableInterface
     /** @var string */
     protected $symbol;
 
-    /** @var int */
-    protected $x;
-
-    /** @var int */
-    protected $y;
+    /**
+     * @var Position
+     */
+    protected $position;
 
 
     /**
      * Point constructor.
      * @param string $symbol
-     * @param int $x
-     * @param int $y
+     * @param Position $position
      */
-    public function __construct(string $symbol, int $x, int $y)
+    public function __construct(string $symbol, Position $position)
     {
         if (strlen($symbol) > 1) {
             throw new \UnexpectedValueException('Point can contain only one symbol.');
         }
         $this->symbol = $symbol;
-        $this->x = $x;
-        $this->y = $y;
+        $this->position = $position;
     }
 
     /**
@@ -36,12 +33,26 @@ class Point implements DrawableInterface
      */
     public function draw(?int $key): void
     {
-        ncurses_move($this->y, $this->x);
+        ncurses_move($this->position->getY(), $this->position->getX());
         ncurses_addstr($this->symbol);
     }
 
     function setSurface(Surface $surface)
     {
-        throw new \BadMethodCallException('Point can\'t be a surface');
+        throw new \BadMethodCallException('Point has default surface');
+    }
+
+    /** @return bool */
+    public function hasSurface(): bool
+    {
+        return true;
+    }
+
+    /** @return Surface
+     * @throws \Exception
+     */
+    public function surface(): Surface
+    {
+        return new Surface($this->position, clone $this->position);
     }
 }

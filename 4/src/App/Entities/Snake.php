@@ -1,9 +1,10 @@
 <?php
 
-namespace App;
+namespace Snake;
 
-use App\Interfaces\CollidableInterface;
+use Snake\Interfaces\CollidableInterface;
 use Base\Point;
+use Base\Position;
 
 class Snake extends Point implements CollidableInterface
 {
@@ -13,13 +14,18 @@ class Snake extends Point implements CollidableInterface
     /** @var bool */
     protected $isDead = false;
 
+    public function __construct(Position $position)
+    {
+        parent::__construct('#', $position);
+    }
+
     /**
      * @return Snake
      */
     public function grow(): Snake
     {
         $lastItem = $this->getLastChild();
-        $newChild = new self($lastItem->symbol, $lastItem->x, $lastItem->y + 1);
+        $newChild = new self((clone $this->position)->decX());
         $lastItem->child = $newChild;
         return $this->child;
     }
@@ -42,8 +48,8 @@ class Snake extends Point implements CollidableInterface
      */
     public function draw(?int $key, ?int $x = null, ?int $y = null): void
     {
-        $oldX = $this->x;
-        $oldY = $this->y;
+        $oldX = $this->position->getX();
+        $oldY = $this->position->getY();
         if ($this->isDead) {
             parent::draw($key);
             if ($this->child) {
@@ -52,16 +58,16 @@ class Snake extends Point implements CollidableInterface
             return;
         }
 
-        $this->y = $y ?? $this->y;
-        $this->x = $x ?? $this->x;
+        $this->position->setY($y ?? $this->position->getY());
+        $this->position->setX($x ?? $this->position->getX());
         if ($key === NCURSES_KEY_DOWN) {
-            $this->y++;
+            $this->position->incY();
         } elseif ($key === NCURSES_KEY_UP) {
-            $this->y--;
+            $this->position->decY();
         } elseif ($key === NCURSES_KEY_RIGHT) {
-            $this->x++;
+            $this->position->incX();
         } elseif ($key === NCURSES_KEY_LEFT) {
-            $this->x--;
+            $this->position->decX();
         }
         parent::draw($key);
         $this->child
@@ -110,7 +116,7 @@ class Snake extends Point implements CollidableInterface
      */
     public function collide(CollidableInterface $point): bool
     {
-        return $point->x === $this->x && $point->y === $this->y;
+        return $point->position->getX() === $this->position->getX() && $point->position->getY() === $this->position->getY();
     }
 
     /**
@@ -120,10 +126,10 @@ class Snake extends Point implements CollidableInterface
      */
     public function within(Scene $scene): bool
     {
-        $surf = $scene->getSurface()->resize(-1, -1);
+        $surf = $scene->surface()->resize(-1, -1);
         $topLeft = $surf->topLeft();
         $bottomRight = $surf->bottomRight();
-        return $this->x > $topLeft->getX() && $this->x < $bottomRight->getX()
-            && $this->y > $topLeft->getY() && $this->y < $bottomRight->getY();
+        return $this->position->getX() > $topLeft->getX() && $this->position->getX() < $bottomRight->getX()
+            && $this->position->getY() > $topLeft->getY() && $this->position->getY() < $bottomRight->getY();
     }
 }

@@ -1,45 +1,35 @@
 <?php
 
-use App\Apple;
-use App\Scene;
-use App\Snake;
-use Base\Application;
-use Base\Colors;
+use Snake\App;
+use Snake\Apple;
+use Snake\DiePopup;
+use Snake\Scene;
+use Snake\Snake;
 use Base\Position;
-use Base\Square;
-use Base\Terminal;
-use Base\Text;
-use Base\Window;
 
 require './vendor/autoload.php';
 
-$snake = new Snake('#', 10, 10);
+$snake = new Snake(new Position(10, 10));
 $snake->grow()->grow();
+$scene = new Scene();
 
+$apple = new Apple($scene->surface()->resize(-2, -2));
 
-$scene = (new Scene('background'))
-    ->setDimensions(new Position(0, 0), new Position(Terminal::width(), Terminal::height()));
+$dieWindow = (new DiePopup())->setVisibility(false);
 
-$apple = new Apple('O', $scene->getSurface()->resize(-2, -2));
-
-$dieWindow = (new Window('die_win', Terminal::centered(50, 5), new Text('You died.', Text::CENTER_MIDDLE)))
-    ->setVisible(false)
-    ->setDefaultColorPair(Colors::BLACK_YELLOW);
-
-$app = (new Application(NCURSES_KEY_RIGHT))
-    ->setRepeatingKeys(true)
+$app = (new App())
     ->addLayer($scene)
     ->addLayer($dieWindow)
     ->addLayer($apple)
     ->addLayer($snake);
 
-$app->handle(static function (Application $app, ?int $key) use ($scene, $dieWindow, $apple, $snake) {
+$app->handle(static function (App $app, ?int $key) use ($scene, $dieWindow, $apple, $snake) {
     if ($snake->collide($apple)) {
         $snake->grow();
         $apple->randMove();
     }
     if ($snake->selfCollision() || !$snake->within($scene)) {
-        $dieWindow->setVisible(true);
+        $dieWindow->setVisibility(true);
         $snake->die();
         $app->exit();
         return 0;

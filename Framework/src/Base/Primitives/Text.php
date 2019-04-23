@@ -82,7 +82,14 @@ class Text implements DrawableInterface
         $x = $pos->getX();
         $y = $pos->getY();
 
-        $lines = str_split($this->text, $this->surface->width());
+        $result = [];
+        foreach (explode("\n", $this->text) as $sentence) {
+            $result[] = str_split($sentence, $this->surface->width());
+        }
+        $lines = [];
+        array_walk_recursive($result, static function ($a) use (&$lines) {
+            $lines[] = $a;
+        });
         $renderedLines = array_slice($lines, 0, $this->surface->height());
 
         ncurses_move($y, $x);
@@ -107,11 +114,11 @@ class Text implements DrawableInterface
         $lines = str_split($this->text, $this->surface->width());
         $renderedLines = array_slice($lines, 0, $this->surface->height());
 
-        $y = $pos->getY() + round( $this->surface->height() - count($renderedLines) / 2) / 2;
+        $y = $pos->getY() + round($this->surface->height() - count($renderedLines) / 2) / 2;
 
 
         foreach ($renderedLines as $line) {
-            $x = $pos->getX() + $this->surface->width() / 2 - strlen($line) /2;
+            $x = $pos->getX() + $this->surface->width() / 2 - strlen($line) / 2;
             ncurses_move($y++, $x);
             ncurses_addstr($line);
         }
@@ -123,5 +130,17 @@ class Text implements DrawableInterface
 
     protected function centerBottomRender()
     {
+    }
+
+    /** @return bool */
+    public function hasSurface(): bool
+    {
+        return !empty($this->surface);
+    }
+
+    /** @return Surface */
+    public function surface(): Surface
+    {
+        return $this->surface;
     }
 }

@@ -32,7 +32,7 @@ class Application
      */
     protected $currentWindowIndex;
 
-    public function __construct(?int $startingKey = null)
+    public function __construct()
     {
         ncurses_init();
         if (ncurses_has_colors()) {
@@ -44,8 +44,6 @@ class Application
         ncurses_nl();
         //ncurses_nonl();
         ncurses_curs_set(self::CURSOR_INVISIBLE);
-
-        $this->lastValidKey = $startingKey;
     }
 
     /**
@@ -91,12 +89,14 @@ class Application
     /**
      * @param \Closure $callback
      */
-    public function handle(\Closure $callback): void
+    public function handle(?\Closure $callback = null): void
     {
         $this->currentWindowIndex = 0;
         while (true) {
             $key = $this->getNonBlockCh(100000); // use a non blocking getch() instead of $ncurses->getCh()
-            $callback($this, $key);
+            if ($callback) {
+                $callback($this, $key);
+            }
             foreach ($this->layers as $layer) {
                 ncurses_color_set(Colors::BLACK_WHITE);
                 $layer->draw($key);
@@ -147,25 +147,5 @@ class Application
         ncurses_init_pair(Colors::BLACK_WHITE, NCURSES_COLOR_WHITE, NCURSES_COLOR_BLACK);
         ncurses_init_pair(Colors::WHITE_BLACK, NCURSES_COLOR_BLACK, NCURSES_COLOR_WHITE);
         ncurses_init_pair(Colors::BLACK_YELLOW, NCURSES_COLOR_YELLOW, NCURSES_COLOR_BLACK);
-    }
-
-    /**
-     * @param bool $repeatingKeys
-     * @return Application
-     */
-    public function setRepeatingKeys(bool $repeatingKeys): self
-    {
-        $this->repeatingKeys = $repeatingKeys;
-        return $this;
-    }
-
-    /**
-     * @param bool $singleLayerFocus
-     * @return Application
-     */
-    public function setSingleLayerFocus(bool $singleLayerFocus): self
-    {
-        $this->singleLayerFocus = $singleLayerFocus;
-        return $this;
     }
 }

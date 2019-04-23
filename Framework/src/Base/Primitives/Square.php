@@ -9,9 +9,6 @@ class Square implements DrawableInterface
     protected $surface;
 
     /** @var string */
-    protected $title;
-
-    /** @var string */
     protected $visible = true;
 
     /** @var string */
@@ -51,7 +48,7 @@ class Square implements DrawableInterface
     /**
      * @return Surface
      */
-    public function getSurface(): Surface
+    public function surface(): Surface
     {
         return $this->surface;
     }
@@ -116,9 +113,16 @@ class Square implements DrawableInterface
      * @param string $visible
      * @return $this
      */
-    public function setVisible(string $visible): self
+    public function setVisibility(string $visible): self
     {
         $this->visible = $visible;
         return $this;
     }
+
+    /** @return bool */
+    public function hasSurface(): bool
+    {
+        return !empty($this->surface);
+    }
+
 }

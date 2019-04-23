@@ -25,11 +25,9 @@ class OrderedList implements DrawableInterface
 
     /**
      * OrderedList constructor.
-     * @param Surface $surface
      */
-    public function __construct(Surface $surface)
+    public function __construct()
     {
-        $this->surface = $surface;
         $this->selected = null;
         $this->focused = 0;
     }
@@ -71,6 +69,7 @@ class OrderedList implements DrawableInterface
             }
             ncurses_addstr(str_pad("[$checked]$text", $width, $symbol));
         }
+        ncurses_color_set(Colors::BLACK_WHITE);
         ncurses_move($y++, $x);
         ncurses_addstr("Current key: $pressedKey");
 
@@ -82,12 +81,12 @@ class OrderedList implements DrawableInterface
     }
 
     /**
-     * @param ListItem $item
+     * @param ListItem ...$items
      * @return $this
      */
-    public function addItem(ListItem $item): self
+    public function addItems(ListItem ...$items): self
     {
-        $this->items[] = $item;
+        array_push($this->items, ...$items);
         return $this;
     }
 
@@ -104,7 +103,7 @@ class OrderedList implements DrawableInterface
     /**
      * @param int|null $key
      */
-    protected function handleKeyPress(?int $key)
+    protected function handleKeyPress(?int $key): void
     {
         switch ($key) {
             case NCURSES_KEY_DOWN:
@@ -119,9 +118,11 @@ class OrderedList implements DrawableInterface
                 break;
             case NCURSES_KEY_DC:
                 $this->delete($this->focused);
+                \EventBus::dispatch(self::EVENT_DELETED, []);
                 break;
             case 10:// 10 is for 'Enter' key
                 $this->selected = $this->focused;
+                \EventBus::dispatch(self::EVENT_SELECTED, [$this->getSelectedItem()]);
                 break;
         }
     }
@@ -130,5 +131,25 @@ class OrderedList implements DrawableInterface
     {
         unset($this->items[$focused]);
         $this->items = array_values($this->items);
+    }
+
+    /**
+     * @return ListItem
+     */
+    public function getSelectedItem(): ListItem
+    {
+        return $this->items[$this->selected];
+    }
+
+    /** @return bool */
+    public function hasSurface(): bool
+    {
+        return !empty($this->surface);
+    }
+
+    /** @return Surface */
+    public function surface(): Surface
+    {
+        return $this->surface;
     }
 }
