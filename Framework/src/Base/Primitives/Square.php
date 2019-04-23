@@ -2,7 +2,7 @@
 
 namespace Base;
 
-class Square implements DrawableInterface
+class Square extends BaseComponent
 {
 
     /** @var Surface */
@@ -15,7 +15,13 @@ class Square implements DrawableInterface
     protected $innerSymbol = ' ';
 
     /** @var string */
-    protected $borderSymbol = '=';
+    protected $horizontalBorderSymbol = '-';
+
+    /** @var string */
+    protected $verticalBorderSymbol = '|';
+
+    /** @var string */
+    protected $borderCornersSymbol = '+';
 
     /** @var int */
     protected $defaultColorPair = Colors::BLACK_WHITE;
@@ -38,9 +44,11 @@ class Square implements DrawableInterface
         for ($y = $higherBound; $y <= $lowerBound; $y++) {
             ncurses_move($y, $this->surface->topLeft()->getX());
             if ($y === $higherBound || $y === $lowerBound) {
-                ncurses_addstr(str_repeat($this->borderSymbol, $width));
+                $line = str_repeat($this->horizontalBorderSymbol, $width - 2);
+                ncurses_addstr($this->borderCornersSymbol. $line . $this->borderCornersSymbol);
             } else {
-                ncurses_addstr($this->borderSymbol . str_repeat($this->innerSymbol, $width - 2) . $this->borderSymbol);
+                ncurses_addstr($this->verticalBorderSymbol . str_repeat($this->innerSymbol,
+                        $width - 2) . $this->verticalBorderSymbol);
             }
         }
     }
@@ -86,12 +94,12 @@ class Square implements DrawableInterface
     }
 
     /**
-     * @param string $borderSymbol
+     * @param string $horizontalBorderSymbol
      * @return $this
      */
-    public function setBorderSymbol(string $borderSymbol): self
+    public function setHorizontalBorderSymbol(string $horizontalBorderSymbol): self
     {
-        $this->borderSymbol = $borderSymbol;
+        $this->horizontalBorderSymbol = $horizontalBorderSymbol;
         return $this;
     }
 
@@ -123,6 +131,42 @@ class Square implements DrawableInterface
     public function hasSurface(): bool
     {
         return !empty($this->surface);
+    }
+
+    /**
+     * @return string
+     */
+    public function getBorderCornersSymbol(): string
+    {
+        return $this->borderCornersSymbol;
+    }
+
+    /**
+     * @param string $borderCornersSymbol
+     * @return Square
+     */
+    public function setBorderCornersSymbol(string $borderCornersSymbol): Square
+    {
+        $this->borderCornersSymbol = $borderCornersSymbol;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVerticalBorderSymbol(): string
+    {
+        return $this->verticalBorderSymbol;
+    }
+
+    /**
+     * @param string $verticalBorderSymbol
+     * @return Square
+     */
+    public function setVerticalBorderSymbol(string $verticalBorderSymbol): Square
+    {
+        $this->verticalBorderSymbol = $verticalBorderSymbol;
+        return $this;
     }
 
 }

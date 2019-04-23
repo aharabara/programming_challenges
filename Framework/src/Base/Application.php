@@ -30,7 +30,7 @@ class Application
     /**
      * @var int
      */
-    protected $currentWindowIndex;
+    protected $currentComponentIndex = 0;
 
     public function __construct()
     {
@@ -61,8 +61,8 @@ class Application
         }
         if ($this->repeatingKeys) {
             $key = $key ?? $this->getLastValidKey();
-            $this->lastValidKey = $key ?? $this->lastValidKey;
         }
+        $this->lastValidKey = $key ?? $this->lastValidKey;
         return $key;
     }
 
@@ -87,21 +87,40 @@ class Application
     }
 
     /**
-     * @param \Closure $callback
+     * @param \Closure|null $callback
+     * @throws \Exception
      */
     public function handle(?\Closure $callback = null): void
     {
-        $this->currentWindowIndex = 0;
+        $this->currentComponentIndex = 0;
         while (true) {
-            $key = $this->getNonBlockCh(100000); // use a non blocking getch() instead of $ncurses->getCh()
+            $pressedKey = $this->getNonBlockCh(100000); // use a non blocking getch() instead of $ncurses->getCh()
             if ($callback) {
-                $callback($this, $key);
+                $callback($this, $pressedKey);
             }
-            foreach ($this->layers as $layer) {
-                ncurses_color_set(Colors::BLACK_WHITE);
-                $layer->draw($key);
+
+            if ($this->handleKeyPress($pressedKey)) {
+                $pressedKey = null;
             }
-            $this->refresh(100000);
+
+            foreach ($this->getDrawableComponents() as $key => $component) {
+                Curse::color(Colors::BLACK_WHITE);
+                if ($this->currentComponentIndex === (int)$key && $component instanceof Window) {
+                    if ($this->lastValidKey === NCURSES_KEY_BTAB) {
+                        $this->currentComponentIndex--;
+                    } else {
+                        $this->currentComponentIndex++;
+                    }
+                }
+                if ($this->currentComponentIndex === (int)$key) {
+                    $component->setFocused(true)
+                        ->draw($pressedKey);
+                } else {
+                    $component->setFocused(false)
+                        ->draw(null);
+                }
+            }
+            $this->refresh(10000);
         }
     }
 
@@ -147,5 +166,37 @@ class Application
         ncurses_init_pair(Colors::BLACK_WHITE, NCURSES_COLOR_WHITE, NCURSES_COLOR_BLACK);
         ncurses_init_pair(Colors::WHITE_BLACK, NCURSES_COLOR_BLACK, NCURSES_COLOR_WHITE);
         ncurses_init_pair(Colors::BLACK_YELLOW, NCURSES_COLOR_YELLOW, NCURSES_COLOR_BLACK);
+    }
+
+    /**
+     * @param int|null $key
+     * @return bool
+     */
+    protected function handleKeyPress(?int $key): bool
+    {
+        if ($key === ord("\t")) {
+            $this->currentComponentIndex++;
+            return true;
+        }
+        if ($key === NCURSES_KEY_BTAB) {
+            $this->currentComponentIndex--;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getDrawableComponents(): array
+    {
+        $components = [];
+        array_walk_recursive($this->layers, static function (DrawableInterface $drawable) use (&$components) {
+            $items = array_filter($drawable->toComponentsArray());
+            if ($items) {
+                array_push($components, ...$items);
+            }
+        });
+        return $components;
     }
 }

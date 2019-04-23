@@ -11,6 +11,11 @@ interface DrawableInterface
     public function draw(?int $key);
 
     /**
+     * @return array
+     */
+    public function toComponentsArray(): array;
+
+    /**
      * @param Surface $surface
      * @return $this
      */
@@ -19,8 +24,17 @@ interface DrawableInterface
     /** @return bool */
     public function hasSurface(): bool;
 
+
     /** @return Surface */
     public function surface(): Surface;
 
+    /** @return bool */
+    public function isFocused(): bool;
+
+    /**
+     * @param bool $focused
+     * @return $this
+     */
+    public function setFocused(bool $focused);
 
 }

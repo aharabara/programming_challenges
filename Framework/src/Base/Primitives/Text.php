@@ -2,7 +2,7 @@
 
 namespace Base;
 
-class Text implements DrawableInterface
+class Text extends BaseComponent
 {
 
     /** @var string */

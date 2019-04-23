@@ -1,11 +1,12 @@
 {
-    "require": {
-        "ext-ncurses": "*"
-    },
-    "autoload": {
-        "classmap": [
-            "../Framework/src",
-            "src"
-        ]
-    }
+  "require": {
+    "ext-ncurses": "*",
+    "ext-ctype": "*"
+  },
+  "autoload": {
+    "classmap": [
+      "../Framework/src",
+      "src"
+    ]
+  }
 }

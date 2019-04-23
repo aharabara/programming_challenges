@@ -6,7 +6,7 @@ use Base\OrderedList;
 use Base\Position;
 use Base\Surface;
 use Base\Terminal;
-use Base\Text;
+use Base\TextArea as Text;
 use Base\Window;
 
 require './vendor/autoload.php';

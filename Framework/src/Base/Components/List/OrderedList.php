@@ -2,11 +2,7 @@
 
 namespace Base;
 
-use Base\Colors;
-use Base\DrawableInterface;
-use Base\Surface;
-
-class OrderedList implements DrawableInterface
+class OrderedList extends BaseComponent
 {
     public const EVENT_SELECTED = 'list.item.selected';
     public const EVENT_DELETED = 'list.item.deleted';
@@ -18,7 +14,7 @@ class OrderedList implements DrawableInterface
     protected $selected;
 
     /** @var int */
-    protected $focused = 0;
+    protected $focusedItem = 0;
 
     /** @var Surface */
     protected $surface;
@@ -29,7 +25,7 @@ class OrderedList implements DrawableInterface
     public function __construct()
     {
         $this->selected = null;
-        $this->focused = 0;
+        $this->focusedItem = 0;
     }
 
 
@@ -52,12 +48,11 @@ class OrderedList implements DrawableInterface
         $this->handleKeyPress($pressedKey);
 
         foreach ($items as $key => $item) {
-            ncurses_color_set(Colors::BLACK_WHITE);
-            ncurses_move($y++, $x);
+            Curse::color(Colors::BLACK_WHITE);
             $checked = ' ';
             $symbol = ' ';
-            if ($key === $this->focused) {
-                ncurses_color_set(Colors::WHITE_BLACK);
+            if ($key === $this->focusedItem) {
+                Curse::color(Colors::WHITE_BLACK);
             }
             if ($key === $this->selected) {
                 $checked = '+';
@@ -67,12 +62,10 @@ class OrderedList implements DrawableInterface
                 $text = substr($text, 0, $width - 6); // 6 = 3 fo dots in the end and 3 for "[ ]"
                 $symbol = '.';
             }
-            ncurses_addstr(str_pad("[$checked]$text", $width, $symbol));
+            Curse::writeAt(str_pad("[$checked]$text", $width, $symbol), $y++, $x);
         }
-        ncurses_color_set(Colors::BLACK_WHITE);
-        ncurses_move($y++, $x);
-        ncurses_addstr("Current key: $pressedKey");
-
+        Curse::color(Colors::BLACK_WHITE);
+        Curse::writeAt("Current key: $pressedKey", $y++, $x);
 
         if (count($items) > $height) {
             ncurses_addstr(str_pad('\/ \/ \/', $width, ' ', STR_PAD_BOTH));
@@ -107,29 +100,29 @@ class OrderedList implements DrawableInterface
     {
         switch ($key) {
             case NCURSES_KEY_DOWN:
-                if ($this->focused < count($this->items) - 1) {
-                    $this->focused++;
+                if ($this->focusedItem < count($this->items) - 1) {
+                    $this->focusedItem++;
                 }
                 break;
             case NCURSES_KEY_UP:
-                if ($this->focused > 0) {
-                    $this->focused--;
+                if ($this->focusedItem > 0) {
+                    $this->focusedItem--;
                 }
                 break;
             case NCURSES_KEY_DC:
-                $this->delete($this->focused);
+                $this->delete($this->focusedItem);
                 \EventBus::dispatch(self::EVENT_DELETED, []);
                 break;
             case 10:// 10 is for 'Enter' key
-                $this->selected = $this->focused;
+                $this->selected = $this->focusedItem;
                 \EventBus::dispatch(self::EVENT_SELECTED, [$this->getSelectedItem()]);
                 break;
         }
     }
 
-    private function delete(int $focused): void
+    private function delete(int $focusedItem): void
     {
-        unset($this->items[$focused]);
+        unset($this->items[$focusedItem]);
         $this->items = array_values($this->items);
     }
 

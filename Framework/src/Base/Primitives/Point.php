@@ -55,4 +55,12 @@ class Point implements DrawableInterface
     {
         return new Surface($this->position, clone $this->position);
     }
+
+    /**
+     * @return array
+     */
+    public function toComponentsArray(): array
+    {
+        return [$this];
+    }
 }

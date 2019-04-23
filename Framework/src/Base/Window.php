@@ -50,10 +50,10 @@ class Window extends Square implements FocusableInterface
         parent::draw($key);
         $topLeft = $this->surface->topLeft();
         ncurses_move($topLeft->getY(), $topLeft->getX() + 3);
-        ncurses_addstr("| {$this->title} |");
-        foreach ($this->components as $component) {
-            $component->draw($key);
+        if ($this->isFocused()) {
+            ncurses_color_set(Colors::BLACK_YELLOW);
         }
+        ncurses_addstr("| {$this->title} |");
         return $this;
     }
 
@@ -113,8 +113,8 @@ class Window extends Square implements FocusableInterface
             return $this;
         }
         $baseSurf = $this->surface->resize(-1, -1);
-        $offsetY = 0;
-        $perComponentHeight = $this->surface->height() / count($this->components);
+        $offsetY = $baseSurf->topLeft()->getY();
+        $perComponentHeight = $baseSurf->height() / count($this->components);
         $perComponentHeight = $perComponentHeight > $this->componentMinHeight ? $perComponentHeight : $this->componentMinHeight;
         foreach ($this->components as $key => $component) {
             if (!$component->hasSurface()) {
@@ -134,4 +134,29 @@ class Window extends Square implements FocusableInterface
 //    {
 //
 //    }
+
+    /**
+     * @return array|DrawableInterface[]
+     */
+    public function toComponentsArray(): array
+    {
+        $components = [];
+        $components[] = $this;
+        array_push($components, ...$this->components ?? []);
+        return $components;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFocused(): bool
+    {
+        foreach ($this->components as $component) {
+            if ($component->isFocused()) {
+                return true;
+            }
+        }
+        return $this->focused;
+    }
+
 }
