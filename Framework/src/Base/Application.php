@@ -6,10 +6,6 @@ namespace Base;
 class Application
 {
 
-    public const CURSOR_INVISIBLE = 0;
-    public const CURSOR_NORMAL = 1;
-    public const CURSOR_VISIBLE = 2;
-
     /** @var int|null $lastValidKey */
     protected $lastValidKey;
 
@@ -43,7 +39,7 @@ class Application
         ncurses_noecho();
         ncurses_nl();
         //ncurses_nonl();
-        ncurses_curs_set(self::CURSOR_INVISIBLE);
+        ncurses_curs_set(Curse::CURSOR_INVISIBLE);
     }
 
     /**
@@ -130,7 +126,7 @@ class Application
     public function exit(): self
     {
         ncurses_echo();
-        ncurses_curs_set(self::CURSOR_VISIBLE);
+        ncurses_curs_set(Curse::CURSOR_VISIBLE);
         ncurses_end();
         return $this;
     }

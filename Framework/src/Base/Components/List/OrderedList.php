@@ -37,7 +37,6 @@ class OrderedList extends BaseComponent
         $topLeft = $this->surface->topLeft();
         $y = $topLeft->getY();
         $x = $topLeft->getX();
-        ncurses_move($y, $x);
         $items = array_values($this->items);
         $height = $this->surface->height();
         $width = $this->surface->width();
@@ -48,27 +47,20 @@ class OrderedList extends BaseComponent
         $this->handleKeyPress($pressedKey);
 
         foreach ($items as $key => $item) {
-            Curse::color(Colors::BLACK_WHITE);
-            $checked = ' ';
             $symbol = ' ';
-            if ($key === $this->focusedItem) {
-                Curse::color(Colors::WHITE_BLACK);
-            }
-            if ($key === $this->selected) {
-                $checked = '+';
-            }
+            $checked = $key === $this->selected ? $checked = '+' : ' ';
+            $color = $key === $this->focusedItem ? Colors::WHITE_BLACK : Colors::BLACK_WHITE;
             $text = $item->getText();
             if (strlen($text) > $width) {
                 $text = substr($text, 0, $width - 6); // 6 = 3 fo dots in the end and 3 for "[ ]"
                 $symbol = '.';
             }
-            Curse::writeAt(str_pad("[$checked]$text", $width, $symbol), $y++, $x);
+            Curse::writeAt(str_pad("[$checked]$text", $width, $symbol), $color, $y++, $x);
         }
-        Curse::color(Colors::BLACK_WHITE);
-        Curse::writeAt("Current key: $pressedKey", $y++, $x);
+        Curse::writeAt("Current key: $pressedKey", Colors::BLACK_WHITE, $y++, $x);
 
         if (count($items) > $height) {
-            ncurses_addstr(str_pad('\/ \/ \/', $width, ' ', STR_PAD_BOTH));
+            Curse::writeAt(str_pad('\/ \/ \/', $width, ' ', STR_PAD_BOTH), Colors::BLACK_WHITE, $y++, $x);
         }
 
     }

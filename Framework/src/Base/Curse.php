@@ -4,6 +4,10 @@ namespace Base;
 
 class Curse
 {
+    public const CURSOR_INVISIBLE = 0;
+    public const CURSOR_NORMAL = 1;
+    public const CURSOR_VISIBLE = 2;
+
     /**
      * @param int|null $color
      */
@@ -12,9 +16,18 @@ class Curse
         ncurses_color_set($color ?? Colors::BLACK_WHITE);
     }
 
-    public static function writeAt(string $text, ?int $y = null, ?int $x = null): void
+    /**
+     * @param string $text
+     * @param int|null $color
+     * @param int|null $y
+     * @param int|null $x
+     */
+    public static function writeAt(string $text, ?int $color = null, ?int $y = null, ?int $x = null): void
     {
-        if($y !== null && $x !== null){
+        if ($color) {
+            self::color($color);
+        }
+        if ($y !== null && $x !== null) {
             ncurses_move($y, $x);
         }
         ncurses_addstr($text);

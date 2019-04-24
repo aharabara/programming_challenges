@@ -1,6 +1,7 @@
 <?php
 
 use App\Task;
+use App\TaskList;
 use Base\Application;
 use Base\OrderedList;
 use Base\Position;
@@ -18,15 +19,7 @@ $rightColumn = new Surface(
     new Position(Terminal::width(), Terminal::height())
 );
 
-$list = (new OrderedList())
-    ->addItems(
-        new Task('Task add.'),
-        new Task('Task delete.'),
-        new Task('Tasks saving.'),
-        new Task('Tasks loading.'),
-        new Task('Tasks edit.'),
-        new Task('Single UI component key handling.')
-    );
+$list = (new TaskList())->load();
 
 $formContent = new Text('Task description', Text::DEFAULT_FILL);
 
@@ -34,16 +27,17 @@ $secondList = clone $list;
 $listWindow = new Window('items', 'Tasks', $leftColumn, $list);
 $formWindow = new Window('item.form', 'Task form', $rightColumn, $formContent, $secondList);
 
-EventBus::listen(OrderedList::EVENT_SELECTED, static function (Task $task) use ($formWindow) {
-
+EventBus::listen(OrderedList::EVENT_SELECTED, static function (Task $task) use ($list, $formWindow) {
     $text =
         "Description: {$task->getText()};\n" .
         "Status: {$task->getStatus()}";
     $formWindow->replaceComponent(0, new Text($text, Text::DEFAULT_FILL));
+    $list->save();
 });
 
-EventBus::listen(OrderedList::EVENT_DELETED, static function () use ($formContent, $formWindow) {
+EventBus::listen(OrderedList::EVENT_DELETED, static function () use ($list, $formContent, $formWindow) {
     $formWindow->replaceComponent(0, $formContent);
+    $list->save();
 });
 
 
