@@ -13,14 +13,14 @@
    - [ ] Progress bar
    - [ ] Modal
    - [ ] Tabs
-   - [ ] Divider
+   - [x] Divider
    - [ ] CheckBox
    - [ ] SelectBox
       - [ ] Scrolling
       - [ ] Multiple
-   - [ ] Input
-   - [ ] Buttons
-   - [ ] TextArea
+   - [x] Input
+   - [x] Buttons
+   - [x] TextArea
       - [ ] Scrolling
       - [ ] Read only
       - [ ] Syntax highlighting
