@@ -101,19 +101,28 @@ class Application
 
             foreach ($this->getDrawableComponents() as $key => $component) {
                 Curse::color(Colors::BLACK_WHITE);
-                if ($this->currentComponentIndex === (int)$key && $component instanceof Window) {
-                    if ($this->lastValidKey === NCURSES_KEY_BTAB) {
-                        $this->currentComponentIndex--;
-                    } else {
-                        $this->currentComponentIndex++;
+                if($this->repeatingKeys){
+                    $component->draw($pressedKey);
+                }else{
+                    if ($this->currentComponentIndex === (int)$key && !$component instanceof FocusableInterface) {
+                        if ($this->lastValidKey === NCURSES_KEY_BTAB) {
+                            $this->currentComponentIndex--;
+                        } else {
+                            $this->currentComponentIndex++;
+                        }
                     }
-                }
-                if ($this->currentComponentIndex === (int)$key) {
-                    $component->setFocused(true)
-                        ->draw($pressedKey);
-                } else {
-                    $component->setFocused(false)
-                        ->draw(null);
+
+                    if ($component instanceof FocusableInterface && $this->currentComponentIndex === (int)$key) {
+                        $component->setFocused(true);
+                    } else {
+                        $component->setFocused(false);
+                    }
+
+                    if ($this->currentComponentIndex === (int)$key) {
+                        $component->draw($pressedKey);
+                    } else {
+                        $component->draw(null);
+                    }
                 }
             }
             $this->refresh(10000);
@@ -162,6 +171,9 @@ class Application
         ncurses_init_pair(Colors::BLACK_WHITE, NCURSES_COLOR_WHITE, NCURSES_COLOR_BLACK);
         ncurses_init_pair(Colors::WHITE_BLACK, NCURSES_COLOR_BLACK, NCURSES_COLOR_WHITE);
         ncurses_init_pair(Colors::BLACK_YELLOW, NCURSES_COLOR_YELLOW, NCURSES_COLOR_BLACK);
+        ncurses_init_pair(Colors::YELLOW_WHITE, NCURSES_COLOR_BLACK, NCURSES_COLOR_YELLOW);
+        ncurses_init_pair(Colors::BLACK_GREEN, NCURSES_COLOR_GREEN, NCURSES_COLOR_BLACK);
+        ncurses_init_pair(Colors::BLACK_RED, NCURSES_COLOR_RED, NCURSES_COLOR_BLACK);
     }
 
     /**
@@ -182,7 +194,7 @@ class Application
     }
 
     /**
-     * @return array
+     * @return array|DrawableInterface[]
      */
     protected function getDrawableComponents(): array
     {

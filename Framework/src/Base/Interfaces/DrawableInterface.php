@@ -28,13 +28,14 @@ interface DrawableInterface
     /** @return Surface */
     public function surface(): Surface;
 
-    /** @return bool */
-    public function isFocused(): bool;
+    /**
+     * @return int|null
+     */
+    public function minimalHeight(): ?int;
 
     /**
-     * @param bool $focused
-     * @return $this
+     * @return int|null
      */
-    public function setFocused(bool $focused);
+    public function minimalWidth(): ?int;
 
 }

@@ -2,9 +2,11 @@
 
 namespace Base;
 
-class OrderedList extends BaseComponent
+class OrderedList extends BaseComponent implements FocusableInterface
 {
+    use EventBusTrait;
     public const EVENT_SELECTED = 'list.item.selected';
+    public const EVENT_BEFORE_SELECT = 'list.item.before_select';
     public const EVENT_DELETED = 'list.item.deleted';
 
     /** @var array|ListItem[] */
@@ -16,8 +18,8 @@ class OrderedList extends BaseComponent
     /** @var int */
     protected $focusedItem = 0;
 
-    /** @var Surface */
-    protected $surface;
+    /** @var bool */
+    protected $itemsAreDeletable = false;
 
     /**
      * OrderedList constructor.
@@ -49,17 +51,21 @@ class OrderedList extends BaseComponent
         foreach ($items as $key => $item) {
             $symbol = ' ';
             $checked = $key === $this->selected ? $checked = '+' : ' ';
-            $color = $key === $this->focusedItem ? Colors::WHITE_BLACK : Colors::BLACK_WHITE;
+            if ($key === $this->focusedItem && $this->isFocused()) {
+                $color = Colors::YELLOW_WHITE;
+            } else {
+                $color = Colors::BLACK_WHITE;
+            }
             $text = $item->getText();
             if (strlen($text) > $width) {
-                $text = substr($text, 0, $width - 6); // 6 = 3 fo dots in the end and 3 for "[ ]"
+                $text = substr($text, 0, $width - 7); // 6 = 3 for dots in the end and 3 for "[ ]"
                 $symbol = '.';
             }
-            Curse::writeAt(str_pad("[$checked]$text", $width, $symbol), $color, $y++, $x);
+            Curse::writeAt(str_pad("[$checked] $text", $width, $symbol), $color, $y++, $x);
         }
-        Curse::writeAt("Current key: $pressedKey", Colors::BLACK_WHITE, $y++, $x);
+        Curse::writeAt("Current key: {$this->surface->height()}", Colors::BLACK_WHITE, $y++, $x);
 
-        if (count($items) > $height) {
+        if (count($items) > $this->surface->height()) {
             Curse::writeAt(str_pad('\/ \/ \/', $width, ' ', STR_PAD_BOTH), Colors::BLACK_WHITE, $y++, $x);
         }
 
@@ -72,16 +78,6 @@ class OrderedList extends BaseComponent
     public function addItems(ListItem ...$items): self
     {
         array_push($this->items, ...$items);
-        return $this;
-    }
-
-    /**
-     * @param Surface $surface
-     * @return $this
-     */
-    public function setSurface(Surface $surface): self
-    {
-        $this->surface = $surface;
         return $this;
     }
 
@@ -102,12 +98,17 @@ class OrderedList extends BaseComponent
                 }
                 break;
             case NCURSES_KEY_DC:
-                $this->delete($this->focusedItem);
-                \EventBus::dispatch(self::EVENT_DELETED, []);
+                if ($this->itemsAreDeletable()) {
+                    $this->delete($this->focusedItem);
+                    $this->dispatch(self::EVENT_DELETED, []);
+                }
                 break;
             case 10:// 10 is for 'Enter' key
+                if ($this->getSelectedItem()) {
+                    $this->dispatch(self::EVENT_BEFORE_SELECT, [$this->getSelectedItem()]);
+                }
                 $this->selected = $this->focusedItem;
-                \EventBus::dispatch(self::EVENT_SELECTED, [$this->getSelectedItem()]);
+                $this->dispatch(self::EVENT_SELECTED, [$this->getSelectedItem()]);
                 break;
         }
     }
@@ -116,25 +117,48 @@ class OrderedList extends BaseComponent
     {
         unset($this->items[$focusedItem]);
         $this->items = array_values($this->items);
+        $this->focused = 0;
+        $this->selected = 0;
     }
 
     /**
      * @return ListItem
      */
-    public function getSelectedItem(): ListItem
+    public function getSelectedItem(): ?ListItem
     {
-        return $this->items[$this->selected];
+        return $this->items[$this->selected] ?? null;
     }
 
-    /** @return bool */
-    public function hasSurface(): bool
+    /**
+     * @param ListItem $item
+     * @return $this
+     */
+    public function selectItem(ListItem $item): self
     {
-        return !empty($this->surface);
+        $this->selected = array_search($item, $this->items, true);
+        $this->dispatch(self::EVENT_SELECTED, [$this->getSelectedItem()]);
+        return $this;
     }
 
-    /** @return Surface */
-    public function surface(): Surface
+    /**
+     * @param string $value
+     * @return $this
+     */
+    public function selectItemByValue(?string $value): self
     {
-        return $this->surface;
+        foreach ($this->items as $key => $item) {
+            if ($item->getValue() === $value) {
+                $this->selected = $key;
+                $this->dispatch(self::EVENT_SELECTED, [$this->getSelectedItem()]);
+                break;
+            }
+        }
+        return $this;
     }
+
+    protected function itemsAreDeletable(): bool
+    {
+        return $this->itemsAreDeletable;
+    }
+
 }

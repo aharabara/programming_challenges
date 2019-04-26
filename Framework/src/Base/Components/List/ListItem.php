@@ -4,17 +4,20 @@ namespace Base;
 class ListItem
 {
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $text;
 
+    /** @var string */
+    protected $value;
+
     /**
+     * @param string $value
      * @param string $text
      */
-    public function __construct(string $text)
+    public function __construct(string $value, ?string $text = null)
     {
-        $this->text = $text;
+        $this->value = $value;
+        $this->text = $text ?? $value;
     }
 
     /**
@@ -23,5 +26,21 @@ class ListItem
     public function getText(): string
     {
         return $this->text;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue(): ?string
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param string $text
+     */
+    public function setText(string $text): void
+    {
+        $this->text = $text;
     }
 }

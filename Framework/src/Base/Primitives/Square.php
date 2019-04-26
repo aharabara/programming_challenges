@@ -54,14 +54,6 @@ class Square extends BaseComponent
     }
 
     /**
-     * @return Surface
-     */
-    public function surface(): Surface
-    {
-        return $this->surface;
-    }
-
-    /**
      * @param Position $topLeft
      * @param Position $bottomRight
      * @return $this
@@ -70,16 +62,6 @@ class Square extends BaseComponent
     public function setDimensions(Position $topLeft, Position $bottomRight): self
     {
         $this->surface = new Surface($topLeft, $bottomRight);
-        return $this;
-    }
-
-    /**
-     * @param Surface $surface
-     * @return $this
-     */
-    public function setSurface(Surface $surface): self
-    {
-        $this->surface = $surface;
         return $this;
     }
 
@@ -125,12 +107,6 @@ class Square extends BaseComponent
     {
         $this->visible = $visible;
         return $this;
-    }
-
-    /** @return bool */
-    public function hasSurface(): bool
-    {
-        return !empty($this->surface);
     }
 
     /**

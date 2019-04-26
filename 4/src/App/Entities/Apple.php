@@ -1,6 +1,8 @@
 <?php
 namespace Snake;
 
+use Base\Colors;
+use Base\Curse;
 use Snake\Interfaces\CollidableInterface;
 use Base\Point;
 use Base\Position;
@@ -21,6 +23,15 @@ class Apple extends Point implements CollidableInterface
         parent::__construct('O', new Position($x, $y));
     }
 
+
+    /**
+     * @param int|null $key
+     */
+    public function draw(?int $key): void
+    {
+        Curse::color(Colors::BLACK_RED);
+        parent::draw($key);
+    }
 
     /**
      * @return $this

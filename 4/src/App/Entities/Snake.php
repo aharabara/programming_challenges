@@ -2,6 +2,8 @@
 
 namespace Snake;
 
+use Base\Colors;
+use Base\Curse;
 use Snake\Interfaces\CollidableInterface;
 use Base\Point;
 use Base\Position;
@@ -48,6 +50,7 @@ class Snake extends Point implements CollidableInterface
      */
     public function draw(?int $key, ?int $x = null, ?int $y = null): void
     {
+        Curse::color(Colors::BLACK_GREEN);
         $oldX = $this->position->getX();
         $oldY = $this->position->getY();
         if ($this->isDead) {

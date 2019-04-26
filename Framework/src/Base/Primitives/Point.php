@@ -63,4 +63,20 @@ class Point implements DrawableInterface
     {
         return [$this];
     }
+
+    /**
+     * @return int|null
+     */
+    public function minimalHeight(): ?int
+    {
+        return null;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function minimalWidth(): ?int
+    {
+        return null;
+    }
 }

@@ -8,9 +8,6 @@ class Text extends BaseComponent
     /** @var string */
     protected $text;
 
-    /** @var Surface */
-    protected $surface;
-
     public const DEFAULT_FILL = 0;
     public const CENTER_TOP = 1;
     public const CENTER_MIDDLE = 2;
@@ -53,37 +50,30 @@ class Text extends BaseComponent
         }
         switch ($this->align) {
             case self::CENTER_TOP:
-                $this->centerTopRender();
+                $this->centerTopRender($this->text);
                 break;
             case self::CENTER_MIDDLE:
-                $this->centerMiddleRender();
+                $this->centerMiddleRender($this->text);
                 break;
             case self::CENTER_BOTTOM:
-                $this->centerBottomRender();
+                $this->centerBottomRender($this->text);
                 break;
             default:
-                $this->defaultRender();
+                $this->defaultRender($this->text);
         }
     }
 
     /**
-     * @param Surface $surface
-     * @return $this
+     * @param string|null $text
      */
-    public function setSurface(Surface $surface): self
-    {
-        $this->surface = $surface;
-        return $this;
-    }
-
-    protected function defaultRender(): void
+    protected function defaultRender(?string $text): void
     {
         $pos = $this->surface->topLeft();
         $x = $pos->getX();
         $y = $pos->getY();
 
         $result = [];
-        foreach (explode("\n", $this->text) as $sentence) {
+        foreach (explode("\n", $text) as $sentence) {
             $result[] = str_split($sentence, $this->surface->width());
         }
         $lines = [];
@@ -103,15 +93,15 @@ class Text extends BaseComponent
         }
     }
 
-    protected function centerTopRender()
+    protected function centerTopRender(?string $text)
     {
     }
 
-    protected function centerMiddleRender()
+    protected function centerMiddleRender(?string $text)
     {
         $pos = $this->surface->topLeft();
 
-        $lines = str_split($this->text, $this->surface->width());
+        $lines = str_split($text, $this->surface->width());
         $renderedLines = array_slice($lines, 0, $this->surface->height());
 
         $y = $pos->getY() + round($this->surface->height() - count($renderedLines) / 2) / 2;
@@ -128,19 +118,7 @@ class Text extends BaseComponent
         }
     }
 
-    protected function centerBottomRender()
+    protected function centerBottomRender(?string $text)
     {
-    }
-
-    /** @return bool */
-    public function hasSurface(): bool
-    {
-        return !empty($this->surface);
-    }
-
-    /** @return Surface */
-    public function surface(): Surface
-    {
-        return $this->surface;
     }
 }

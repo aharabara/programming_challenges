@@ -2,7 +2,7 @@
 
 namespace Base;
 
-class Window extends Square implements FocusableInterface
+class Window extends Square
 {
 
     public const VERTICAL = 'layout.vertical';
@@ -18,7 +18,6 @@ class Window extends Square implements FocusableInterface
     protected $title;
 
     protected $layout;
-    protected $componentMinHeight = 15;
 
     /**
      * Window constructor.
@@ -28,7 +27,7 @@ class Window extends Square implements FocusableInterface
      * @param DrawableInterface ...$components
      * @throws \Exception
      */
-    public function __construct(string $id, string $title, Surface $surface, DrawableInterface ...$components)
+    public function __construct(string $id, ?string $title, Surface $surface, DrawableInterface ...$components)
     {
         $this->id = $id;
         $this->components = $components;
@@ -49,11 +48,10 @@ class Window extends Square implements FocusableInterface
         }
         parent::draw($key);
         $topLeft = $this->surface->topLeft();
-        ncurses_move($topLeft->getY(), $topLeft->getX() + 3);
-        if ($this->isFocused()) {
-            ncurses_color_set(Colors::BLACK_YELLOW);
+        if ($this->title) {
+            $color = $this->isFocused() ? Colors::BLACK_YELLOW : null;
+            Curse::writeAt("| {$this->title} |", $color, $topLeft->getY(), $topLeft->getX() + 3);
         }
-        ncurses_addstr("| {$this->title} |");
         return $this;
     }
 
@@ -115,12 +113,12 @@ class Window extends Square implements FocusableInterface
         $baseSurf = $this->surface->resize(-1, -1);
         $offsetY = $baseSurf->topLeft()->getY();
         $perComponentHeight = $baseSurf->height() / count($this->components);
-        $perComponentHeight = $perComponentHeight > $this->componentMinHeight ? $perComponentHeight : $this->componentMinHeight;
         foreach ($this->components as $key => $component) {
+            $height = $component->minimalHeight() ?? $perComponentHeight;
             if (!$component->hasSurface()) {
                 $surf = new Surface(
                     new Position($baseSurf->topLeft()->getX(), $offsetY),
-                    new Position($baseSurf->bottomRight()->getX(), $offsetY += $perComponentHeight)
+                    new Position($baseSurf->bottomRight()->getX(), $offsetY += $height)
                 );
                 $component->setSurface($surf);
             } else {
@@ -140,6 +138,9 @@ class Window extends Square implements FocusableInterface
      */
     public function toComponentsArray(): array
     {
+        if (!$this->visible) {
+            return [$this];
+        }
         $components = [];
         $components[] = $this;
         array_push($components, ...$this->components ?? []);

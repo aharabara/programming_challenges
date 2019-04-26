@@ -20,6 +20,6 @@ trait HasMeta
 
     public function getMeta(string $name): ?Meta
     {
-        return $this->metadata[$name] ?? null;
+        return $this->metadata[$name] ?? new Meta($name, '');
     }
 }

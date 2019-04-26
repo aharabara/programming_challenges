@@ -16,9 +16,13 @@ class Task extends ListItem
     public const FAILED = 'failed';
     public const OLD = 'old';
 
-    public function __construct(string $text)
+    /**
+     * Task constructor.
+     * @param string $value
+     */
+    public function __construct(string $value)
     {
-        parent::__construct($text);
+        parent::__construct($value);
         $this->addMeta(new Meta('status', self::WAITING));
         $this->addMeta(new Meta('description', 'Task description...'));
     }
