@@ -1,5 +1,17 @@
 # programming_challenges
 ## TUI Framework
+V0.1
+Components
+   - [x] Window
+   - [x] List
+   - [x] Input
+   - [x] Buttons
+   - [x] TextArea
+      - [ ] Cursor displaing
+      - [ ] Editing in the middle
+V0.3
+...
+ToDo
  - Components
    - [x] Window
      - [ ] Scrolling
