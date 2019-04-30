@@ -5,6 +5,7 @@ Components
    - [x] Window
    - [x] List
    - [x] Input
+   - [x] Divider
    - [x] Buttons
    - [x] TextArea
       - [ ] Cursor displaing
@@ -13,10 +14,11 @@ Components
 V0.3
 ...
 ToDo
+
 Components
-   - [x] Window
+   - [ ] Window
      - [ ] Scrolling
-   - [x] List
+   - [ ] List
      - [ ] Scrolling
      - [ ] Reordering
    - [ ] Table
@@ -26,14 +28,13 @@ Components
    - [ ] Progress bar
    - [ ] Modal
    - [ ] Tabs
-   - [x] Divider
    - [ ] CheckBox
    - [ ] SelectBox
       - [ ] Scrolling
       - [ ] Multiple
-   - [x] Input
-   - [x] Buttons
-   - [x] TextArea
+   - [ ] Input
+   - [ ] Buttons
+   - [ ] TextArea
       - [ ] Scrolling
       - [ ] Read only
       - [ ] Syntax highlighting
