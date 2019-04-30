@@ -1,6 +1,6 @@
 # programming_challenges
 ## TUI Framework
-V0.1
+V0.2
 Components
    - [x] Window
    - [x] List
@@ -12,7 +12,20 @@ Components
       - [ ] Editing in the middle
 
 V0.3
-...
+   - [ ] Notifications
+   - [ ] TemporaryComponentInterface
+   - [ ] SelectBox
+   - [ ] CheckBox
+
+v0.4
+   - [ ] ScrollableComponentInterface
+   - [ ] Scrolling in:
+       - [ ] Textarea
+       - [ ] SelectBox
+       - [ ] CheckBox
+       - [ ] Window
+
+
 ToDo
 
 Components
