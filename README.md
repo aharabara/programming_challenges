@@ -9,10 +9,11 @@ Components
    - [x] TextArea
       - [ ] Cursor displaing
       - [ ] Editing in the middle
+
 V0.3
 ...
 ToDo
- - Components
+Components
    - [x] Window
      - [ ] Scrolling
    - [x] List
