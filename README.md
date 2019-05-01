@@ -1,6 +1,6 @@
 # programming_challenges
 ## TUI Framework
-####V0.2
+#### V0.2
    - [x] Window
    - [x] List
    - [x] Input
@@ -10,13 +10,13 @@
       - [ ] Cursor displaing
       - [ ] Editing in the middle
 
-####V0.3
+#### V0.3
    - [ ] Notifications
    - [ ] TemporaryComponentInterface
    - [ ] SelectBox
    - [ ] CheckBox
 
-####v0.4
+#### v0.4
    - [ ] ScrollableComponentInterface
    - [ ] Scrolling in:
        - [ ] Textarea
@@ -25,7 +25,7 @@
        - [ ] Window
 
 
-####ToDo
+#### ToDo
    - [ ] List
      - [ ] Reordering
    - [ ] Table
