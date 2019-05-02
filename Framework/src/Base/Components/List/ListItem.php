@@ -38,9 +38,11 @@ class ListItem
 
     /**
      * @param string $text
+     * @return $this
      */
-    public function setText(string $text): void
+    public function setText(string $text)
     {
         $this->text = $text;
+        return $this;
     }
 }

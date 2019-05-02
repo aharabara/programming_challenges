@@ -130,6 +130,14 @@ class OrderedList extends BaseComponent implements FocusableInterface
     }
 
     /**
+     * @return bool
+     */
+    public function hasSelected(): bool
+    {
+        return isset($this->items[$this->selected]);
+    }
+
+    /**
      * @param ListItem $item
      * @return $this
      */

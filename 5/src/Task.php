@@ -2,19 +2,21 @@
 
 namespace App;
 
-use Base\HasMeta;
 use Base\ListItem;
-use Base\Meta;
 
 class Task extends ListItem
 {
-    use HasMeta;
-
     public const WAITING = 'waiting';
     public const IN_PROGRESS = 'in_progress';
     public const DONE = 'done';
     public const FAILED = 'failed';
     public const OLD = 'old';
+
+    /** @var string */
+    protected $status;
+
+    /** @var string */
+    protected $description;
 
     /**
      * Task constructor.
@@ -23,16 +25,17 @@ class Task extends ListItem
     public function __construct(string $value)
     {
         parent::__construct($value);
-        $this->addMeta(new Meta('status', self::WAITING));
-        $this->addMeta(new Meta('description', 'Task description...'));
+        $this->status = self::WAITING;
+        $this->description = 'Task description...';
     }
 
     /**
-     * @param string $status
+     * @param string|null $status
      * @return Task
      */
-    public function setStatus(string $status): Task
+    public function setStatus(?string $status = ''): Task
     {
+        $status = $status ?? self::WAITING;
         $allowedStates = [
             self::OLD,
             self::FAILED,
@@ -43,8 +46,7 @@ class Task extends ListItem
         if (!in_array($status, $allowedStates, true)) {
             throw new \UnexpectedValueException('Wrong Task state.'); // todo change to WrongTaskStatusException()
         }
-        $this->getMeta('status')
-            ->setContent($status);
+        $this->status = $status;
         return $this;
     }
 
@@ -53,6 +55,24 @@ class Task extends ListItem
      */
     public function getStatus(): string
     {
-        return $this->getMeta('status')->getContent();
+        return $this->status ?: self::WAITING;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description ?: '';
+    }
+
+    /**
+     * @param string $content
+     * @return Task
+     */
+    public function setDescription(?string $content = '')
+    {
+        $this->description = $content;
+        return $this;
     }
 }

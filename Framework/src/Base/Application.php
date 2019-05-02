@@ -99,25 +99,21 @@ class Application
                 $pressedKey = null;
             }
 
-            foreach ($this->getDrawableComponents() as $key => $component) {
+            $components = $this->getDrawableComponents();
+            foreach ($components as $key => $component) {
                 Curse::color(Colors::BLACK_WHITE);
-                if($this->repeatingKeys){
+                if ($this->repeatingKeys) {
                     $component->draw($pressedKey);
-                }else{
-                    if ($this->currentComponentIndex === (int)$key && !$component instanceof FocusableInterface) {
-                        if ($this->lastValidKey === NCURSES_KEY_BTAB) {
-                            $this->currentComponentIndex--;
-                        } else {
-                            $this->currentComponentIndex++;
-                        }
-                    }
-
-                    if ($component instanceof FocusableInterface && $this->currentComponentIndex === (int)$key) {
-                        $component->setFocused(true);
-                    } else {
-                        $component->setFocused(false);
-                    }
-
+                } else {
+                    $this
+                        // if it is a window with focus, then skip it
+                        ->handleNonFocusableComponents($component, $key)
+                        // if index is not within components quantity, then set it to 0 or count($components)
+                        ->handleFocusIndexOverflow($components)
+                        // check one more time if it is window
+                        ->handleNonFocusableComponents($component, $key)
+                        // set component as focused / not focused.
+                        ->handleComponentFocus($component, (int)$key);
                     if ($this->currentComponentIndex === (int)$key) {
                         $component->draw($pressedKey);
                     } else {
@@ -206,5 +202,51 @@ class Application
             }
         });
         return $components;
+    }
+
+    /**
+     * @param DrawableInterface $component
+     * @param int|null $key
+     * @return $this
+     */
+    protected function handleComponentFocus(DrawableInterface $component, ?int $key): self
+    {
+        if ($component instanceof FocusableInterface && $this->currentComponentIndex === (int)$key) {
+            $component->setFocused(true);
+        } else {
+            $component->setFocused(false);
+        }
+        return $this;
+    }
+
+    /**
+     * @param array|DrawableInterface $components
+     * @return $this
+     */
+    protected function handleFocusIndexOverflow(array $components): self
+    {
+        if ($this->currentComponentIndex >= count($components)) {
+            $this->currentComponentIndex = 0;
+        } elseif ($this->currentComponentIndex < 0) {
+            $this->currentComponentIndex = count($components) - 1;
+        }
+        return $this;
+    }
+
+    /**
+     * @param DrawableInterface $component
+     * @param int|null $key
+     * @return $this
+     */
+    protected function handleNonFocusableComponents(DrawableInterface $component, ?int $key): self
+    {
+        if ($this->currentComponentIndex === $key && !$component instanceof FocusableInterface) {
+            if ($this->lastValidKey === NCURSES_KEY_BTAB) {
+                $this->currentComponentIndex--;
+            } else {
+                $this->currentComponentIndex++;
+            }
+        }
+        return $this;
     }
 }

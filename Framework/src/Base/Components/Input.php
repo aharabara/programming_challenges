@@ -24,12 +24,24 @@ class Input extends TextArea
     public function draw(?int $key): void
     {
         $length = $this->surface->width() - 1;
+        if ($this->isRestricted($key)) {
+            $key = null;
+        }
         $this->handleKeyPress($key);
-        if ($this->isFocused()){
+        if ($this->isFocused()) {
             Curse::color(Colors::BLACK_YELLOW);
-        }else{
+        } else {
             Curse::color(Colors::BLACK_WHITE);
         }
-        $this->defaultRender(str_pad(substr(' '.str_replace(' ', '_', $this->text), 0, $length), $length, '_'));
+        $this->defaultRender(str_pad(substr(str_replace(' ', '_', $this->text), 0, $length), $length, '_'));
+    }
+
+    /**
+     * @param int|null $key
+     * @return bool
+     */
+    protected function isRestricted(?int $key): bool
+    {
+        return in_array($key, [10, NCURSES_KEY_DOWN, NCURSES_KEY_UP], true);
     }
 }

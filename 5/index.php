@@ -20,7 +20,7 @@ require './vendor/autoload.php';
 
 $leftColumnWidth = 40;
 $leftColumnTop = new Surface(new Position(0, 0), new Position($leftColumnWidth, Terminal::height() - 7));
-$leftColumnBottom = new Surface(new Position(0, Terminal::height() - 7), new Position($leftColumnWidth, Terminal::height()));
+$leftColumnBottom = new Surface(new Position(0, Terminal::height() - 7),  new Position($leftColumnWidth, Terminal::height()));
 
 $rightColumn = new Surface(new Position($leftColumnWidth, 0), new Position(Terminal::width(), Terminal::height()));
 
@@ -61,28 +61,33 @@ $addBtn->listen(Button::CLICKED, static function () use ($tasks) {
 });
 
 $saveBtn->listen(Button::CLICKED, static function () use ($taskDescription, $statusList, $taskTitle, $tasks) {
+    /** @var Task $task */
     $task = $tasks->getSelectedItem();
-    $task->getMeta('description')->setContent($taskDescription->getText());
-    $task->setStatus($statusList->getSelectedItem()->getValue());
-    $task->setText($taskTitle->getText());
-    $tasks->save();
+    if ($statusList->hasSelected()) {
+        $task->setStatus($statusList->getSelectedItem()->getValue());
+    }
+    $task->setDescription($taskDescription->getText())
+        ->setText($taskTitle->getText())
+        ->save();
 });
 
 $tasks->listen(OrderedList::EVENT_SELECTED,
     static function (Task $task) use ($emptyWindow, $taskTitle, $statusList, $taskDescription, $tasks, $formWindow) {
         $emptyWindow->setVisibility(false);
         $formWindow->setVisibility(true);
-        $taskDescription->setText($task->getMeta('description')->getContent());
+        $taskDescription->setText($task->getDescription());
         $taskTitle->setText($task->getText());
         $statusList->selectItemByValue($task->getStatus());
     });
 
 $tasks->listen(OrderedList::EVENT_BEFORE_SELECT,
     static function (Task $task) use ($taskTitle, $statusList, $taskDescription, $tasks, $formWindow) {
-        $task->getMeta('description')->setContent($taskDescription->getText());
-        $task->setStatus($statusList->getSelectedItem()->getValue());
-        $task->setText($taskTitle->getText());
-        $tasks->save();
+        if ($statusList->hasSelected()) {
+            $task->setStatus($statusList->getSelectedItem()->getValue());
+        }
+        $task->setDescription($taskDescription->getText())
+            ->setText($taskTitle->getText())
+            ->save();
     });
 
 $tasks->listen(OrderedList::EVENT_DELETED,
@@ -96,7 +101,6 @@ $app = (new Application())
     ->addLayer($listWindow)
     ->addLayer($emptyWindow)
     ->addLayer($formWindow)
-    ->addLayer($btnWindow)
-;
+    ->addLayer($btnWindow);
 
 $app->handle();
