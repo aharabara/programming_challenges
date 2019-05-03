@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b5a06b87de008e154b2ad43afb449754",
+    "content-hash": "8c1d3d6b02be52fbfd9886468bc27542",
     "packages": [
         {
             "name": "aharabara/habarnam",
@@ -49,8 +49,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "ext-ncurses": "*",
-        "ext-ctype": "*"
+        "ext-ncurses": "*"
     },
     "platform-dev": []
 }

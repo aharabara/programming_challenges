@@ -1,0 +1,11 @@
+{
+    "require": {
+        "ext-ncurses": "*",
+        "aharabara/habarnam": "dev-master"
+    },
+    "autoload": {
+        "classmap": [
+            "src"
+        ]
+    }
+}
