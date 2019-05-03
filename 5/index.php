@@ -29,7 +29,7 @@ $tasks = (new TaskList())->load();
 $taskTitle = new Input('');
 $taskDescription = new TextArea('', TextArea::DEFAULT_FILL);
 
-$statusList = new StatusList();
+$statuses = new StatusList();
 $saveBtn = new Button('Save');
 $addBtn = new Button('Add item');
 
@@ -48,7 +48,7 @@ $formWindow = new Window('item.form', 'Task form', $rightColumn,
     $taskDescription,
     new Divider('='),
     new Label('Status:'),
-    $statusList
+    $statuses
 );
 $formWindow->setVisibility(false);
 $emptyWindow = new Window('empty', 'Task form', $rightColumn, new Text('Task title', Text::CENTER_MIDDLE));
@@ -60,34 +60,34 @@ $addBtn->listen(Button::CLICKED, static function () use ($tasks) {
         ->selectItem($task);
 });
 
-$saveBtn->listen(Button::CLICKED, static function () use ($taskDescription, $statusList, $taskTitle, $tasks) {
+$saveBtn->listen(Button::CLICKED, static function () use ($taskDescription, $statuses, $taskTitle, $tasks) {
     /** @var Task $task */
     $task = $tasks->getSelectedItem();
-    if ($statusList->hasSelected()) {
-        $task->setStatus($statusList->getSelectedItem()->getValue());
+    if ($statuses->hasSelected()) {
+        $task->setStatus($statuses->getSelectedItem()->getValue());
     }
     $task->setDescription($taskDescription->getText())
-        ->setText($taskTitle->getText())
-        ->save();
+        ->setText($taskTitle->getText());
+    $tasks->save();
 });
 
 $tasks->listen(OrderedList::EVENT_SELECTED,
-    static function (Task $task) use ($emptyWindow, $taskTitle, $statusList, $taskDescription, $tasks, $formWindow) {
+    static function (Task $task) use ($emptyWindow, $taskTitle, $statuses, $taskDescription, $tasks, $formWindow) {
         $emptyWindow->setVisibility(false);
         $formWindow->setVisibility(true);
         $taskDescription->setText($task->getDescription());
         $taskTitle->setText($task->getText());
-        $statusList->selectItemByValue($task->getStatus());
+        $statuses->selectItemByValue($task->getStatus());
     });
 
 $tasks->listen(OrderedList::EVENT_BEFORE_SELECT,
-    static function (Task $task) use ($taskTitle, $statusList, $taskDescription, $tasks, $formWindow) {
-        if ($statusList->hasSelected()) {
-            $task->setStatus($statusList->getSelectedItem()->getValue());
+    static function (Task $task) use ($taskTitle, $statuses, $taskDescription, $tasks, $formWindow) {
+        if ($statuses->hasSelected()) {
+            $task->setStatus($statuses->getSelectedItem()->getValue());
         }
         $task->setDescription($taskDescription->getText())
-            ->setText($taskTitle->getText())
-            ->save();
+            ->setText($taskTitle->getText());
+        $tasks->save();
     });
 
 $tasks->listen(OrderedList::EVENT_DELETED,

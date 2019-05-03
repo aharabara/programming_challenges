@@ -1,11 +1,11 @@
 {
   "require": {
     "ext-ncurses": "*",
-    "ext-ctype": "*"
+    "ext-ctype": "*",
+    "aharabara/habarnam": "dev-master"
   },
   "autoload": {
     "classmap": [
-      "../Framework/src",
       "src"
     ]
   }

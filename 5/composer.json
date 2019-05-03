@@ -1,10 +1,10 @@
 {
     "require": {
-        "ext-ncurses": "*"
+        "ext-ncurses": "*",
+        "aharabara/habarnam": "dev-master"
     },
     "autoload": {
         "classmap": [
-            "../Framework/src",
             "src"
         ]
     }
