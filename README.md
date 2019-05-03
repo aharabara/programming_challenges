@@ -1,22 +1,26 @@
 # programming_challenges
 ## TUI Framework
-#### V0.2
+#### V0.2.0
    - [x] Window
    - [x] List
    - [x] Input
    - [x] Divider
    - [x] Buttons
    - [x] TextArea
-      - [ ] Cursor displaing
-      - [ ] Editing in the middle
+      - [x] Cursor displaing
+      - [x] Editing in the middle
 
-#### V0.3
+#### v0.2.1
+   - [ ] New line correct handling for textarea
+   - [ ] Correct surface partition for components
+   
+#### V0.3.0
    - [ ] Notifications
    - [ ] TemporaryComponentInterface
    - [ ] SelectBox
    - [ ] CheckBox
 
-#### v0.4
+#### v0.4.0
    - [ ] ScrollableComponentInterface
    - [ ] Scrolling in:
        - [ ] Textarea
