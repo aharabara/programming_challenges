@@ -1,0 +1,27 @@
+<application>
+    <panels>
+        <panel id="left-column.tasks" title="Tasks" surface="left-column.top">
+            <list id="task-list"
+                  deletable-items="true"
+                  on.item.selected="\App\TaskController@taskSelect"
+                  on.item.before-select="\App\TaskController@beforeTaskSelect"
+                  on.init="\App\TaskController@load"/>
+        </panel>
+        <panel id="right-column.title" title="Task details" surface="right-column.top">
+            <label id="task.title.label" text="Title:"/>
+            <input id="task.title"/>
+        </panel>
+        <panel id="right-column.description" title="Task details" surface="right-column.middle">
+            <label id="task.description.label" text="Description:"/>
+            <textarea id="task.description"/>
+        </panel>
+        <panel id="right-column.status" title="Task details" surface="right-column.bottom">
+            <label id="task.status.label" text="Current status:"/>
+            <list id="task.status" on.init="\App\TaskController@taskStatuses"/>
+        </panel>
+        <panel id="left-column.buttons" surface="left-column.bottom">
+            <button id="btn.add-task" label="Add item" on.press="\App\TaskController@addItem"/>
+            <button id="btn.save" label="Save" on.press="\App\TaskController@save"/>
+        </panel>
+    </panels>
+</application>

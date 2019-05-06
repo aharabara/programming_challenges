@@ -4,48 +4,12 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8c1d3d6b02be52fbfd9886468bc27542",
-    "packages": [
-        {
-            "name": "aharabara/habarnam",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/aharabara/habarnam.git",
-                "reference": "917ffc289b52f8edc8556e5d23aa38254d57eb37"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/aharabara/habarnam/zipball/917ffc289b52f8edc8556e5d23aa38254d57eb37",
-                "reference": "917ffc289b52f8edc8556e5d23aa38254d57eb37",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "aharabara",
-                    "email": "dev.xandr@gmail.com"
-                }
-            ],
-            "description": "Ncurses wrapper for fast TUI building",
-            "time": "2019-05-03T06:04:48+00:00"
-        }
-    ],
+    "content-hash": "a85a8bfb5f5f38a33570356ffd58b616",
+    "packages": [],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "aharabara/habarnam": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

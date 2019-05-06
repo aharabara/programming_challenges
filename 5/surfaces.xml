@@ -1,0 +1,25 @@
+<application>
+    <surfaces>
+        <surface id="left-column.top">
+            <pos x="0" y="0"/>
+            <pos x="40" y="-8"/>
+        </surface>
+        <surface id="left-column.bottom">
+            <pos x="0" y="-7"/>
+            <pos x="40"/>
+        </surface>
+        <surface id="right-column.top">
+            <pos x="41"/>
+            <pos y="4"/>
+        </surface>
+        <surface id="right-column.middle">
+            <pos y="5" x="41"/>
+            <pos y="-11"/>
+        </surface>
+        <surface id="right-column.bottom">
+            <pos y="-10" x="41"/>
+            <pos />
+            <pos/>
+        </surface>
+    </surfaces>
+</application>
