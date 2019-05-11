@@ -1,0 +1,12 @@
+<application>
+    <surfaces>
+        <surface id="input">
+            <pos/>
+            <pos y="4"/>
+        </surface>
+        <surface id="buttons">
+            <pos y="5"/>
+            <pos/>
+        </surface>
+    </surfaces>
+</application>

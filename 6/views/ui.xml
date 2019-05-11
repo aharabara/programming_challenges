@@ -1,0 +1,12 @@
+<application>
+    <panels>
+        <panel surface="input">
+        </panel>
+        <panel surface="buttons">
+            <button min-width="10" label="1"/>
+            <button min-width="10" label="2"/>
+            <button min-width="10" label="3"/>
+            <button min-width="10" label="4"/>
+        </panel>
+    </panels>
+</application>

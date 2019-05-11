@@ -5,9 +5,9 @@ namespace Snake;
 use Base\Colors;
 use Base\Terminal;
 use Base\Text;
-use Base\Window;
+use Base\Panel;
 
-class DiePopup extends Window
+class DiePopup extends Panel
 {
     protected $defaultColorPair = Colors::BLACK_YELLOW;
 

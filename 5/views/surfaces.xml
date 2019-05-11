@@ -10,14 +10,14 @@
         </surface>
         <surface id="right-column.top">
             <pos x="41"/>
-            <pos y="4"/>
+            <pos y="6"/>
         </surface>
         <surface id="right-column.middle">
-            <pos y="5" x="41"/>
-            <pos y="-11"/>
+            <pos y="7" x="41"/>
+            <pos y="-12"/>
         </surface>
         <surface id="right-column.bottom">
-            <pos y="-10" x="41"/>
+            <pos y="-11" x="41"/>
             <pos />
             <pos/>
         </surface>

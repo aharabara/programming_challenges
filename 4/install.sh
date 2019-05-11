@@ -7,7 +7,7 @@ mv ncurses-1.0.2 ncurses-php5
 patch --strip=0 --verbose --ignore-whitespace <ncurses.patch
 cd ./ncurses-php5
 phpize
-./configure
+./configure --enable-ncursesw
 make
 sudo make install
 echo "\n\n!!! Please, don't forget to add 'extension=ncurses.so' to your php.ini"

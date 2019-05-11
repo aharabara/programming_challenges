@@ -1,12 +1,12 @@
 {
   "require": {
-    "ext-ncurses": "*",
-    "ext-ctype": "*",
-    "aharabara/habarnam": "dev-master"
+    "ext-mbstring": "*",
+    "ext-ncurses": "*"
   },
   "autoload": {
     "classmap": [
-      "src"
+      "src",
+      "/home/aharabara/Projects/Experimets/habarnam/src"
     ]
   }
 }
