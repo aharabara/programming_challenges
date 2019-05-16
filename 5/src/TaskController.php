@@ -19,6 +19,8 @@ class TaskController extends BaseController
     protected $taskDescription;
     /** @var Input */
     protected $taskTitle;
+    /** @var Application */
+    private $app;
 
     /**
      * TaskController constructor.
@@ -26,11 +28,12 @@ class TaskController extends BaseController
      */
     public function __construct(Application $app)
     {
-        $view = $app->view();
+        $this->app = $app;
+        $view = $app->view('main');
         $this->taskList = $view->component('task-list');
-        $this->taskStatus = $app->view()->component('task.status');
-        $this->taskDescription = $app->view()->component('task.description');
-        $this->taskTitle = $app->view()->component('task.title');
+        $this->taskDescription = $view->component('task.description');
+        $this->taskStatus = $view->component('task.status');
+        $this->taskTitle = $view->component('task.title');
     }
 
     /**
@@ -86,11 +89,15 @@ class TaskController extends BaseController
 
     public function addItem(): void
     {
-        $task = new Task('Task title');
-        $task->setStatus(Task::WAITING);
+        $task = $this->taskList->getSelectedItem();
+        if($task){
+            $this->updateTask($task);
+        }
+        $newTask = new Task('Task title');
+        $newTask->setStatus(Task::WAITING);
         $this->taskList
-            ->addItems($task)
-            ->selectItem($task);
+            ->addItems($newTask)
+            ->selectItem($newTask);
     }
 
     public function taskSelect(Task $task): void
@@ -113,5 +120,21 @@ class TaskController extends BaseController
         $task->setText($this->taskTitle->getText());
         $task->setDescription($this->taskDescription->getText());
         $task->setStatus($this->taskStatus->getSelectedItem()->getValue() ?? Task::WAITING);
+    }
+
+    public function deleteTask(): void
+    {
+        $this->taskList->delete($this->taskList->getFocusedItem());
+        $this->app->switchTo('main');
+    }
+
+    public function confirmDelete(): void
+    {
+        $this->app->switchTo('popup');
+    }
+
+    public function closePopUp(): void
+    {
+        $this->app->switchTo('main');
     }
 }

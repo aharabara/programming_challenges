@@ -2,6 +2,7 @@
 
 use Base\{Application, Button, Divider, Input, Label, OrderedList, View, TextArea, Panel};
 
+chdir(__DIR__);
 require './vendor/autoload.php';
 
 View::registerComponent('button', Button::class);
@@ -11,14 +12,14 @@ View::registerComponent('input', Input::class);
 View::registerComponent('label', Label::class);
 View::registerComponent('textarea', TextArea::class);
 View::registerComponent('list', OrderedList::class);
-$view = (new View())
+$mainView = (new View())
     ->parse('./views/surfaces.xml')
-    ->parse('./views/ui.xml')
-;
+    ->parse('./views/main.xml');
 
-$app = new Application($view);
-foreach ($view->containers() as $panel) {
-    $app->addLayer($panel);
-}
+$popUpView = (new View($mainView->surfaces()))
+    ->parse('./views/popup.xml');
 
-$app->handle();
+(new Application($mainView))
+    ->addView('main', $mainView)
+    ->addView('popup', $popUpView)
+    ->handle();
