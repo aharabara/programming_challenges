@@ -1,0 +1,12 @@
+<application>
+    <view id="login">
+        <panel surface="login">
+            <label align="center-middle">Login</label>
+            <input id="login.user"/>
+            <label align="center-middle">Password</label>
+            <input id="login.password"/>
+            <text/> <!-- dump way to make paddings =_=' -->
+            <button display="block" on.press="\App\TaskController@login">Login</button>
+        </panel>
+    </view>
+</application>

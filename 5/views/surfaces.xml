@@ -12,6 +12,7 @@
             <pos x="41"/>
             <pos/>
         </surface>
+        <surface id="login" height="15" type="centered"/>
         <surface id="popup" height="10" type="centered"/>
     </surfaces>
 </application>

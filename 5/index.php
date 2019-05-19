@@ -12,7 +12,12 @@ $mainView = (new View())
 $popUpView = (new View($mainView->surfaces()))
     ->parse('./views/popup.xml');
 
+$loginView = (new View($mainView->surfaces()))
+    ->parse('./views/login.xml');
+
 (new Application($mainView))
+    ->addView('login', $loginView)
     ->addView('main', $mainView)
     ->addView('popup', $popUpView)
+    ->debug(true)
     ->handle();

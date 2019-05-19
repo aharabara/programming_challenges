@@ -1,8 +1,9 @@
 <application>
     <view id="popup">
-        <panel surface="popup" layout="horizontal">
-            <text align="center-middle">Are you sure you want to delete it?</text>
-            <text align="center-middle">Are you sure you want to delete it?</text>
+        <panel id="popup" surface="popup" layout="horizontal">
+            <text align="center-middle">
+                Are you sure you want to delete it?
+            </text>
             <button min-width="50%" on.press="\App\TaskController@closePopUp">No</button>
             <button min-width="50%" on.press="\App\TaskController@deleteTask">Yes</button>
         </panel>
