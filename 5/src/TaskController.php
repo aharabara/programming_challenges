@@ -13,6 +13,8 @@ class TaskController extends BaseController
 {
     /** @var OrderedList */
     protected $taskList;
+    /** @var Input */
+    protected $usernameInput;
     /** @var OrderedList */
     protected $taskStatus;
     /** @var TextArea */
@@ -20,7 +22,11 @@ class TaskController extends BaseController
     /** @var Input */
     protected $taskTitle;
     /** @var Application */
-    private $app;
+    protected $app;
+
+    /** @var string */
+    protected $username;
+
 
     /**
      * TaskController constructor.
@@ -51,16 +57,22 @@ class TaskController extends BaseController
     }
 
 
-    /**
-     * @param OrderedList $list
-     */
-    public function load(OrderedList $list): void
+    public function load(): void
     {
+        $list = $this->taskList;
+        /** @var Input $usernameInput*/
+        $usernameInput = $this->app->currentView()->component('login.username');
+        $this->username = $usernameInput->getText();
+
+        if (empty($this->username)){
+            throw new \UnexpectedValueException('WTF');
+        }
         $home = getenv('HOME');
-        if (is_dir("$home/.config/starlight")) {
-            $serializedData = file_get_contents("$home/.config/starlight/tasks.ser");
+        if (is_dir("$home/.config/starlight") && file_exists("$home/.config/starlight/{$this->username}-tasks.ser")) {
+            $serializedData = file_get_contents("$home/.config/starlight/{$this->username}-tasks.ser");
             $list->setItems(unserialize($serializedData) ?? []);
         }
+        $this->app->switchTo('main');
     }
 
     public function save()
@@ -72,19 +84,7 @@ class TaskController extends BaseController
         $home = getenv('HOME');
         $this->createDir("$home/.config")
             ->createDir("$home/.config/starlight");
-        file_put_contents("$home/.config/starlight/tasks.ser", serialize($this->taskList->getItems()));
-    }
-
-    /**
-     * @param string $configFolder
-     * @return TaskController
-     */
-    protected function createDir(string $configFolder)
-    {
-        if (!is_dir($configFolder) && !mkdir($configFolder) && !is_dir($configFolder)) {
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', $configFolder));
-        }
-        return $this;
+        file_put_contents("$home/.config/starlight/{$this->username}-tasks.ser", serialize($this->taskList->getItems()));
     }
 
     public function addItem(): void
@@ -112,16 +112,6 @@ class TaskController extends BaseController
         $this->updateTask($task);
     }
 
-    /**
-     * @param Task $task
-     */
-    protected function updateTask(Task $task): void
-    {
-        $task->setText($this->taskTitle->getText());
-        $task->setDescription($this->taskDescription->getText());
-        $task->setStatus($this->taskStatus->getSelectedItem()->getValue() ?? Task::WAITING);
-    }
-
     public function deleteTask(): void
     {
         $this->taskList->delete($this->taskList->getFocusedItem());
@@ -136,5 +126,27 @@ class TaskController extends BaseController
     public function closePopUp(): void
     {
         $this->app->switchTo('main');
+    }
+
+    /**
+     * @param Task $task
+     */
+    protected function updateTask(Task $task): void
+    {
+        $task->setText($this->taskTitle->getText());
+        $task->setDescription($this->taskDescription->getText());
+        $task->setStatus($this->taskStatus->getSelectedItem()->getValue() ?? Task::WAITING);
+    }
+
+    /**
+     * @param string $configFolder
+     * @return TaskController
+     */
+    protected function createDir(string $configFolder)
+    {
+        if (!is_dir($configFolder) && !mkdir($configFolder) && !is_dir($configFolder)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $configFolder));
+        }
+        return $this;
     }
 }

@@ -4,8 +4,8 @@
             <text align="center-middle">
                 Are you sure you want to delete it?
             </text>
-            <button min-width="50%" on.press="\App\TaskController@closePopUp">No</button>
-            <button min-width="50%" on.press="\App\TaskController@deleteTask">Yes</button>
+            <button min-width="50%" margin="2, 5, 0" on.press="\App\TaskController@closePopUp">No</button>
+            <button min-width="50%" margin="2, 5, 0" on.press="\App\TaskController@deleteTask">Yes</button>
         </panel>
     </view>
 </application>

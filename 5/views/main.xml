@@ -5,8 +5,7 @@
                   deletable-items="true"
                   on.item.selected="\App\TaskController@taskSelect"
                   on.item.deleting="\App\TaskController@confirmDelete"
-                  on.item.before-select="\App\TaskController@beforeTaskSelect"
-                  on.init="\App\TaskController@load"/>
+                  on.item.before-select="\App\TaskController@beforeTaskSelect"/>
         </panel>
         <panel title="Task details" surface="right-column.top">
             <label>Title:</label>
@@ -22,8 +21,8 @@
             <list id="task.status" on.init="\App\TaskController@taskStatuses"/>
         </panel>
         <panel layout="horizontal" surface="left-column.bottom">
-            <button min-width="50%" on.press="\App\TaskController@addItem">Add item</button>
-            <button min-width="50%" on.press="\App\TaskController@save">Save</button>
+            <button min-width="50%" margin="0, 1" on.press="\App\TaskController@addItem">Add item</button>
+            <button min-width="50%" margin="0, 1" on.press="\App\TaskController@save">Save</button>
         </panel>
     </view>
 </application>
