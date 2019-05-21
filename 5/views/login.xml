@@ -3,8 +3,6 @@
         <panel surface="login" padding="1, 4">
             <label align="center-middle">Login</label>
             <input id="login.username"/>
-            <label align="center-middle">Password</label>
-            <input id="login.password"/>
             <button margin="1, 0" display="block" on.press="\App\TaskController@load">Login</button>
         </panel>
     </view>

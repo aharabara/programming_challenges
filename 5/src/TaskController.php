@@ -135,7 +135,8 @@ class TaskController extends BaseController
     {
         $task->setText($this->taskTitle->getText());
         $task->setDescription($this->taskDescription->getText());
-        $task->setStatus($this->taskStatus->getSelectedItem()->getValue() ?? Task::WAITING);
+        $selectedStatus = $this->taskStatus->getSelectedItem();
+        $task->setStatus($selectedStatus ? $selectedStatus->getValue() : Task::WAITING);
     }
 
     /**
