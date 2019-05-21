@@ -1,23 +1,11 @@
 <?php
 
-use Base\{Application, View};
+use Base\{Application, ViewRender};
 
 chdir(__DIR__);
 require './vendor/autoload.php';
 
-$mainView = (new View())
-    ->parse('./views/surfaces.xml')
-    ->parse('./views/main.xml');
-
-$popUpView = (new View($mainView->surfaces()))
-    ->parse('./views/popup.xml');
-
-$loginView = (new View($mainView->surfaces()))
-    ->parse('./views/login.xml');
-
-(new Application($mainView))
-    ->addView('login', $loginView)
-    ->addView('main', $mainView)
-    ->addView('popup', $popUpView)
+$render = (new ViewRender('./views/'))->prepare();
+(new Application($render, 'login'))
     ->debug(true)
     ->handle();

@@ -35,7 +35,7 @@ class TaskController extends BaseController
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $view = $app->view('main');
+        $view = $app->view();
         $this->taskList = $view->component('task-list');
         $this->taskDescription = $view->component('task.description');
         $this->taskStatus = $view->component('task.status');
@@ -61,11 +61,13 @@ class TaskController extends BaseController
     {
         $list = $this->taskList;
         /** @var Input $usernameInput*/
-        $usernameInput = $this->app->currentView()->component('login.username');
+        $usernameInput = $this->app->view()->component('login.username');
         $this->username = $usernameInput->getText();
 
+        $this->app->view()->component('login.validation.username')->setVisibility(false);
         if (empty($this->username)){
-            throw new \UnexpectedValueException('WTF');
+            $this->app->view()->component('login.validation.username')->setVisibility(true);
+            return;
         }
         $home = getenv('HOME');
         if (is_dir("$home/.config/starlight") && file_exists("$home/.config/starlight/{$this->username}-tasks.ser")) {

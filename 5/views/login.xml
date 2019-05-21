@@ -1,9 +1,0 @@
-<application>
-    <view id="login">
-        <panel surface="login" padding="1, 4">
-            <label align="center-middle">Login</label>
-            <input id="login.username"/>
-            <button margin="1, 0" display="block" on.press="\App\TaskController@load">Login</button>
-        </panel>
-    </view>
-</application>
